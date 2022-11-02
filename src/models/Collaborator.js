@@ -7,6 +7,7 @@ module.exports = function (sequelize) {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
+        onDelete: "cascade",
         references: {
           model: "recipes",
           key: "recipe_id",
@@ -15,6 +16,7 @@ module.exports = function (sequelize) {
       recipe_user_id: {
         type: DataTypes.UUID,
         allowNull: false,
+        onDelete: "cascade",
         references: {
           model: "recipes",
           key: "user_id",
@@ -23,6 +25,7 @@ module.exports = function (sequelize) {
       collaborator_id: {
         type: DataTypes.UUID,
         allowNull: true,
+        onDelete: null,
         references: {
           model: "users",
           key: "user_id",

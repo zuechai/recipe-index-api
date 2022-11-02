@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { Sequelize } = require("sequelize");
+const { initializeTables } = require("./utils/dbSetup");
 
 require("dotenv").config();
 app.use(express.json());
@@ -25,6 +26,41 @@ const Recipe = require("./models/Recipe")(sqlize);
 const IngredientList = require("./models/IngredientList")(sqlize);
 const Method = require("./models/Method")(sqlize);
 const Collaborator = require("./models/Collaborator")(sqlize);
+
+const createUser = async () => {
+  try {
+    const signUpUser = {
+      first_name: "Anthony",
+      last_name: "Zuech",
+      user_name: "zuechai",
+      google_id: "zuechai@gmail.com",
+    };
+
+    const users = await User.findAll({
+      where: {
+        user_name: signUpUser.user_name,
+        google_id: signUpUser.google_id,
+      },
+      raw: true,
+    });
+
+    if (users.length > 0) {
+      const foundUser = users.find(
+        (user) => user.google_id === "zuechai@gmail.com"
+      );
+      console.log("A user already exists with this email");
+      console.log(foundUser);
+      return;
+    }
+    console.log("Success! Account created!");
+    await User.create({ ...signUpUser });
+    return;
+  } catch (e) {
+    console.log(`Error =====>\n${e}`);
+  }
+};
+
+// createUser();
 
 const recipe = {
   // id
@@ -104,6 +140,7 @@ const createRecipe = async () => {
       image_url: image,
       user_id: user.user_id,
     });
+    console.log(sqlRecipe);
 
     // find or create a unit & ingredient -- add error handling
     ingredients.forEach(({ ingredient, quantity, unit }) => {
@@ -115,10 +152,10 @@ const createRecipe = async () => {
         // check if the unit was found
         if (created) {
           console.log(created, sqlUnit);
-          return true;
+          return sqlUnit;
         }
         console.log("Unit already exists", sqlUnit);
-        return false;
+        return sqlUnit;
       };
 
       // find or create an ingredient -- add error handling
@@ -130,14 +167,14 @@ const createRecipe = async () => {
         // check if the ingredient was found
         if (created) {
           console.log(`${sqlIng} created!`, created);
-          return true;
+          return sqlIng;
         }
         console.log(`Found: created is ${created}`);
-        return false;
+        return sqlIng;
       };
 
       // create an ingredient list for the recipe -- add error handling
-      const createIngredientList = async () => {
+      const createIngredientList = async (sqlIngredient, sqlUnit) => {
         const createdList = await IngredientList.create({
           recipe_id: sqlRecipe.recipe_id,
           ingredient_id: sqlIngredient.ingredient_id,
@@ -147,15 +184,20 @@ const createRecipe = async () => {
       };
 
       // call async functions
-      const sqlUnit = createUnit();
-      const sqlIngredient = createIngredient();
-      createIngredientList();
+      const callAsyncFuncs = async () => {
+        const sqlUnit = await createUnit();
+        const sqlIngredient = await createIngredient();
+        console.log(sqlIngredient);
+        createIngredientList(sqlIngredient, sqlUnit);
+      };
+      callAsyncFuncs();
     });
 
     // create methods for the recipe -- add error handling
     methods.forEach(({ stepNum, method }) => {
       const createMethods = async () => {
         const createdMethods = await Method.create({
+          recipe_id: sqlRecipe.recipe_id,
           step_num: stepNum,
           method: method,
         });
@@ -170,7 +212,8 @@ const createRecipe = async () => {
   }
 };
 
-// createRecipe();
+// initializeTables(sqlize);
+createRecipe();
 
 const PORT = process.env.PORT || 8080;
 

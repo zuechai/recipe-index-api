@@ -6,6 +6,7 @@ module.exports = function (sequelize) {
       recipe_id: {
         type: DataTypes.UUID,
         allowNull: false,
+        onDelete: "cascade",
         references: {
           model: "recipes",
           key: "recipe_id",
