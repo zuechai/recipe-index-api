@@ -16,6 +16,7 @@ module.exports = function (sequelize) {
       image_url: {
         type: DataTypes.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       user_id: {
         type: DataTypes.UUID,

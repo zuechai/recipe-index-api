@@ -1,4 +1,4 @@
-export const initializeTables = async (sequelize) => {
+const initializeTables = async (sequelize) => {
   try {
     await sequelize.sync();
     console.log("success");

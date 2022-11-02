@@ -26,6 +26,12 @@ const IngredientList = require("./models/IngredientList")(sqlize);
 const Method = require("./models/Method")(sqlize);
 const Collaborator = require("./models/Collaborator")(sqlize);
 
+const recipe = {};
+
+const test = async () => {};
+
+test();
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
