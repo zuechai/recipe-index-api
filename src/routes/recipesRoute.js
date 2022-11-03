@@ -1,5 +1,19 @@
-// get all recipes where user_id === user
-// return title, img, and ingredients
+const express = require("express");
+const app = express();
+const router = express.Router();
 
-// get single recipe where user_id === user
-// return all recipe details
+require("dotenv").config();
+app.use(express.json());
+
+const {
+  getUserRecipes,
+  getSelectedRecipe,
+} = require("../controllers/recipesController");
+
+// get all recipes where user_id === user.id
+router.get("/", getUserRecipes);
+
+// get single recipe where user_id === user.id && recipe_id === :id
+router.get("/:id", getSelectedRecipe);
+
+module.exports = router;
