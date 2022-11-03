@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { Sequelize } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const { initializeTables } = require("./utils/dbSetup");
 
 require("dotenv").config();
@@ -30,10 +30,10 @@ const Collaborator = require("./models/Collaborator")(sqlize);
 const createUser = async () => {
   try {
     const signUpUser = {
-      first_name: "Anthony",
-      last_name: "Zuech",
-      user_name: "zuechai",
-      google_id: "zuechai@gmail.com",
+      first_name: "Calvin",
+      last_name: "Mayfield Zuech",
+      user_name: "zuefield",
+      google_id: "calvin.zuefield@gmail.com",
     };
 
     const users = await User.findAll({
@@ -46,7 +46,7 @@ const createUser = async () => {
 
     if (users.length > 0) {
       const foundUser = users.find(
-        (user) => user.google_id === "zuechai@gmail.com"
+        (user) => user.google_id === "calvin.zuefield@gmail.com"
       );
       console.log("A user already exists with this email");
       console.log(foundUser);
@@ -64,31 +64,31 @@ const createUser = async () => {
 
 const recipe = {
   // id
-  name: "Fermented Napa Cabbage",
+  name: "Calvin's favorite Breakfast",
   image: null,
   ingredients: [
     {
-      ingredient: "napa cabbage",
-      quantity: 1,
-      unit: "head",
+      ingredient: "raisins",
+      quantity: 10,
+      unit: "each",
       preparation: null,
     },
     {
-      ingredient: "water",
-      quantity: 4,
-      unit: "quarts",
+      ingredient: "dried cranberries",
+      quantity: 10,
+      unit: "each",
       preparation: "",
     },
     {
-      ingredient: "garlic",
-      quantity: 1,
-      unit: "clove",
-      preparation: "",
-    },
-    {
-      ingredient: "distilled white vinegar",
-      quantity: 0.5,
+      ingredient: "milk",
+      quantity: 0.25,
       unit: "cup",
+      preparation: "",
+    },
+    {
+      ingredient: "peanut butter",
+      quantity: 1,
+      unit: "spoonful",
       preparation: "",
     },
   ],
@@ -96,36 +96,35 @@ const recipe = {
     {
       id: 1,
       stepNum: 1,
-      method:
-        "Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.",
+      method: "Count the raisins.",
     },
     {
       id: 2,
       stepNum: 2,
-      method:
-        "Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.",
+      method: "Count the cranberries",
     },
     {
       id: 3,
       stepNum: 3,
-      method:
-        "Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.",
+      method: "Pour the milk.",
     },
     {
       id: 4,
       stepNum: 4,
       method:
-        "Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.",
+        "Enjoy a spoonful of peanut butter separately from dried fruit milk mixture.",
     },
   ],
-  userToken: "zuechai",
+  userToken: "zuefield",
+  collaborators: [{ username: "zuefield", canEdit: false }],
 };
 
 // todo add all the error handling!!!
 const createRecipe = async () => {
   try {
     // validate recipe is valid... . . . ...
-    const { name, image, ingredients, methods, userToken } = recipe;
+    const { name, image, ingredients, methods, userToken, collaborators } =
+      recipe;
 
     // find the user
     const user = await User.findOne({ where: { user_name: userToken } });
@@ -205,7 +204,27 @@ const createRecipe = async () => {
       createMethods();
     });
 
-    // addCollaborators()
+    // add a collaborator if one is provided and exist
+    collaborators.forEach(({ username, canEdit }) => {
+      const addCollaborators = async () => {
+        // find the user to add as a collaborator
+        const foundUser = await User.findOne({
+          where: { user_name: username },
+        });
+        // valid user was found
+        if (foundUser) {
+          // add the user as a collaborator
+          await Collaborator.create({
+            recipe_id: sqlRecipe.recipe_id,
+            recipe_user_id: user.user_id,
+            collaborator_id: foundUser.user_id,
+            can_edit: canEdit ?? false,
+          });
+        }
+      };
+      addCollaborators();
+    });
+
     return;
   } catch (e) {
     console.log(e);
@@ -213,7 +232,7 @@ const createRecipe = async () => {
 };
 
 // initializeTables(sqlize);
-createRecipe();
+// createRecipe();
 
 const PORT = process.env.PORT || 8080;
 
