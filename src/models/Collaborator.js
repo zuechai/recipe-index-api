@@ -13,15 +13,6 @@ module.exports = function (sequelize) {
           key: "recipe_id",
         },
       },
-      recipe_user_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        onDelete: "cascade",
-        references: {
-          model: "recipes",
-          key: "user_id",
-        },
-      },
       collaborator_id: {
         type: DataTypes.UUID,
         allowNull: true,
@@ -46,11 +37,6 @@ module.exports = function (sequelize) {
           name: "recipe_id",
           using: "BTREE",
           fields: [{ name: "recipe_id" }],
-        },
-        {
-          name: "recipe_user_id",
-          using: "BTREE",
-          fields: [{ name: "recipe_user_id" }],
         },
         {
           name: "collaborator_id",

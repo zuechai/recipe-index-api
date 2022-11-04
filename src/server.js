@@ -3,23 +3,18 @@ const cors = require("cors");
 const app = express();
 const { sqlize } = require("./utils/dbConnect");
 
+const initModels = require("./models/init-models");
+const recipesRoute = require("./routes/recipesRoute");
+
 require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
-// // SEQUELIZE AND DATA MODEL IMPORTS
-// const sqlize = new Sequelize(
-//   process.env.DB_NAME,
-//   process.env.DB_USER,
-//   process.env.DB_PASSWORD,
-//   {
-//     host: "localhost",
-//     dialect: "mysql",
-//   }
-// );
-
-const recipesRoute = require("./routes/recipesRoute");
 app.use("/recipes", recipesRoute);
+
+initModels(sqlize);
+
+sqlize.sync({ force: true });
 
 const PORT = process.env.PORT || 8080;
 

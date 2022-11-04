@@ -1,7 +1,7 @@
 const { sqlize } = require("../utils/dbConnect");
 const Recipe = require("../models/Recipe")(sqlize);
-const IngredientList = require("../models/IngredientList")(sqlize);
-const Ingredient = require("../models/Ingredient")(sqlize);
+const IngredientList = require("../models/IngredientList");
+// const Ingredient = require("../models/Ingredient")(sqlize);
 
 const userId = "b85362d6-10bb-42bd-9958-4e7f1b4ddc0d";
 
@@ -30,21 +30,21 @@ const getSelectedRecipe = async (req, res) => {
     },
     raw: true,
   });
-  const ingredients = await IngredientList.findAll({
-    include: {
-      model: Ingredient,
-      required: true,
-    },
-    // attributes: {
-    //   exclude: ["id", "createdAt", "updatedAt"],
-    // },
-    // where: {
-    //   recipe_id: req.params.id,
-    // },
-    raw: true,
-  });
+  // const ingredients = await IngredientList.findAll({
+  //   include: {
+  //     model: Ingredient,
+  //     required: true,
+  //   },
+  // attributes: {
+  //   exclude: ["id", "createdAt", "updatedAt"],
+  // },
+  // where: {
+  //   recipe_id: req.params.id,
+  // },
+  // raw: true,
+  // });
 
-  res.json({ ...recipe, ingredients });
+  res.json({ ...recipe });
 };
 
 module.exports = { getUserRecipes, getSelectedRecipe };

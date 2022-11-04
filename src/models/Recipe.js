@@ -21,6 +21,7 @@ module.exports = function (sequelize) {
       user_id: {
         type: DataTypes.UUID,
         allowNull: false,
+        uniqueValue: true,
         onDelete: "cascade",
         references: {
           model: "users",

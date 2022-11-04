@@ -1,4 +1,6 @@
 const { DataTypes } = require("sequelize");
+const { sqlize: sequelize } = require("../utils/dbConnect");
+
 module.exports = function (sequelize) {
   return sequelize.define(
     "ingredient_lists",
@@ -21,17 +23,9 @@ module.exports = function (sequelize) {
         },
       },
       measurement: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
         defaultValue: 1,
-      },
-      unit_id: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "unit_id",
-        },
       },
     },
     {
@@ -48,11 +42,6 @@ module.exports = function (sequelize) {
           name: "ingredient_id",
           using: "BTREE",
           fields: [{ name: "ingredient_id" }],
-        },
-        {
-          name: "unit_id",
-          using: "BTREE",
-          fields: [{ name: "unit_id" }],
         },
       ],
     }
