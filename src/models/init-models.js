@@ -16,10 +16,6 @@ function initModels(sequelize) {
   const units = _units(sequelize, DataTypes);
   const users = _users(sequelize, DataTypes);
 
-  ingredient_lists.belongsTo(ingredients, {
-    as: "ingredient",
-    foreignKey: "ingredient_id",
-  });
   ingredients.hasMany(ingredient_lists, {
     as: "ingredient_lists",
     foreignKey: "ingredient_id",
@@ -37,17 +33,21 @@ function initModels(sequelize) {
     as: "author_collaborators",
     foreignKey: "author_id",
   });
-  ingredient_lists.belongsTo(recipes, {
+  ingredient_lists.belongsToMany(recipes, {
     as: "recipe",
     foreignKey: "recipe_id",
   });
-  recipes.hasMany(ingredient_lists, {
+  ingredient_lists.belongsToMany(units, { as: "unit", foreignKey: "unit_id" });
+  ingredient_lists.belongsToMany(ingredients, {
+    as: "ingredient",
+    foreignKey: "ingredient_id",
+  });
+  recipes.belongsToMany(ingredient_lists, {
     as: "ingredient_lists",
     foreignKey: "recipe_id",
   });
   methods.belongsTo(recipes, { as: "recipe", foreignKey: "recipe_id" });
   recipes.hasMany(methods, { as: "methods", foreignKey: "recipe_id" });
-  ingredient_lists.belongsTo(units, { as: "unit", foreignKey: "unit_id" });
   units.hasMany(ingredient_lists, {
     as: "ingredient_lists",
     foreignKey: "unit_id",
