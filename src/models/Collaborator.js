@@ -1,49 +1,22 @@
-const { DataTypes } = require("sequelize");
-module.exports = function (sequelize) {
-  return sequelize.define(
-    "collaborators",
-    {
-      recipe_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        onDelete: "cascade",
-        references: {
-          model: "recipes",
-          key: "recipe_id",
-        },
-      },
-      collaborator_id: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        onDelete: null,
-        references: {
-          model: "users",
-          key: "user_id",
-        },
-      },
-      can_edit: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-    },
-    {
-      sequelize,
-      tableName: "collaborators",
-      timestamps: true,
-      indexes: [
-        {
-          name: "recipe_id",
-          using: "BTREE",
-          fields: [{ name: "recipe_id" }],
-        },
-        {
-          name: "collaborator_id",
-          using: "BTREE",
-          fields: [{ name: "collaborator_id" }],
-        },
-      ],
-    }
-  );
-};
+// const { DataTypes, Model } = require("sequelize");
+// const { sqlize: sequelize } = require("../utils/dbConnect");
+// const Recipe = require("./Recipe");
+// const User = require("./User");
+
+// class Collaborator extends Model {}
+
+// Collaborator.init(
+//   {
+//     canEdit: DataTypes.BOOLEAN,
+//     allowNull: false,
+//     defaultValue: false,
+//   },
+//   {
+//     sequelize,
+//     modelName: "Collaborator",
+//     tableName: "collaborators",
+//   }
+// );
+
+// module.exports = Collaborator;
+// module.exports.default = Collaborator;

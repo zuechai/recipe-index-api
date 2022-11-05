@@ -1,20 +1,32 @@
 const { sqlize } = require("../utils/dbConnect");
-const Recipe = require("../models/Recipe")(sqlize);
-const IngredientList = require("../models/IngredientList");
-// const Ingredient = require("../models/Ingredient")(sqlize);
+const User = require("../models/User");
+const Ingredient = require("../models/Ingredient");
+const Recipe = require("../models/Recipe");
+const Method = require("../models/Method");
+const RecipeIngredient = require("../models/RecipeIngredient");
 
-const userId = "b85362d6-10bb-42bd-9958-4e7f1b4ddc0d";
+const userId = "e508e567-8ede-4cf8-ae55-09334696b2a1";
 
 // gets all recipes for the logged in user
 const getUserRecipes = async (_req, res) => {
-  try {
-    // error handling for invalid user or no token information
-    const recipes = await Recipe.findAll({
-      where: {
-        user_id: userId,
+  // retrieves logged in user from db
+  const user = await User.findOne({
+    where: {
+      userId,
+    },
+  });
+  // gets a list of all recipes with ingredient list
+  const userRecipes = await user.getRecipes({
+    include: [
+      {
+        model: Ingredient,
+        attributes: ["ingredient", "ingredientId"],
+        through: { attributes: [] },
       },
-    });
-    res.json(recipes);
+    ],
+  });
+  res.json(userRecipes);
+  try {
   } catch (e) {
     res.status(500).send(e);
   }
@@ -22,29 +34,23 @@ const getUserRecipes = async (_req, res) => {
 
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
-  const recipe = await Recipe.findOne({
-    attributes: ["title", "image_url"],
-    where: {
-      user_id: userId,
-      recipe_id: req.params.id,
-    },
-    raw: true,
-  });
-  // const ingredients = await IngredientList.findAll({
-  //   include: {
-  //     model: Ingredient,
-  //     required: true,
-  //   },
-  // attributes: {
-  //   exclude: ["id", "createdAt", "updatedAt"],
-  // },
-  // where: {
-  //   recipe_id: req.params.id,
-  // },
-  // raw: true,
-  // });
-
-  res.json({ ...recipe });
+  try {
+    const selectRecipe = await Recipe.findOne({
+      attributes: ["recipeId", "title", "image"],
+      include: [
+        {
+          model: Ingredient,
+          attributes: ["ingredient", "ingredientId"],
+          through: { attributes: ["measurement"] },
+        },
+      ],
+      where: { recipeId: req.params.id },
+    });
+    res.json(selectRecipe);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
 };
 
 module.exports = { getUserRecipes, getSelectedRecipe };

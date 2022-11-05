@@ -1,46 +1,54 @@
-const { DataTypes } = require("sequelize");
-module.exports = function (sequelize) {
-  return sequelize.define(
-    "recipes",
-    {
-      recipe_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        primaryKey: true,
-      },
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      image_url: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: null,
-      },
-      user_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        uniqueValue: true,
-        onDelete: "cascade",
-        references: {
-          model: "users",
-          key: "user_id",
-        },
-      },
+const { DataTypes, Model } = require("sequelize");
+const { sqlize: sequelize } = require("../utils/dbConnect");
+const Method = require("./Method");
+const Ingredient = require("./Ingredient");
+const RecipeIngredient = require("./RecipeIngredient");
+
+class Recipe extends Model {}
+
+Recipe.init(
+  {
+    recipeId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+      unique: true,
+      onDelete: "cascade",
     },
-    {
-      sequelize,
-      tableName: "recipes",
-      timestamps: true,
-      indexes: [
-        {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [{ name: "recipe_id" }],
-        },
-      ],
-    }
-  );
-};
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+  },
+  {
+    sequelize,
+    modelName: "Recipe",
+    tableName: "recipes",
+  }
+);
+
+Recipe.hasMany(Method, {
+  foreignKey: "recipeId",
+});
+Method.belongsTo(Recipe, {
+  foreignKey: "recipeId",
+});
+
+Recipe.belongsToMany(Ingredient, {
+  through: RecipeIngredient,
+  foreignKey: "recipeId",
+});
+
+Ingredient.belongsToMany(Recipe, {
+  through: RecipeIngredient,
+  foreignKey: "ingredientId",
+});
+
+module.exports = Recipe;
+module.exports.default = Recipe;

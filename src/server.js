@@ -1,23 +1,28 @@
+// import
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const { sqlize } = require("./utils/dbConnect");
 
-const initModels = require("./models/init-models");
-const recipesRoute = require("./routes/recipesRoute");
-
+// initialize
 require("dotenv").config();
 app.use(express.json());
 app.use(cors());
+app.use("/static", express.static("public"));
+
+const alterSync = async () => {
+  sqlize.sync({ alter: true });
+};
+
+// alterSync();
+
+// routes
+const recipesRoute = require("./routes/recipesRoute");
 
 app.use("/recipes", recipesRoute);
 
-initModels(sqlize);
-
-sqlize.sync({ force: true });
-
+// run server
 const PORT = process.env.PORT || 8080;
-
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
