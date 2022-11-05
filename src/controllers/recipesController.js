@@ -29,7 +29,23 @@ const getUserRecipes = async (_req, res) => {
       },
     ],
   });
-  res.json(userRecipes);
+
+  const recipes = userRecipes.map((recipe) => {
+    const { recipeId: id, title, image, updatedAt } = recipe;
+    const [...ingArray] = recipe.dataValues.Ingredients;
+    const ingredients = ingArray.map(({ ingredientId, ingredient }) => {
+      return { id: ingredientId, ingredient };
+    });
+    return {
+      id,
+      title,
+      image,
+      ingredients,
+      updatedAt,
+    };
+  });
+
+  res.json(recipes);
   try {
   } catch (e) {
     res.status(500).send(e);
