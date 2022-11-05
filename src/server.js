@@ -11,10 +11,10 @@ app.use(cors());
 app.use("/static", express.static("public"));
 
 const alterSync = async () => {
-  sqlize.sync({ alter: true });
+  sqlize.sync();
 };
 
-// alterSync();
+alterSync();
 
 // routes
 const recipesRoute = require("./routes/recipesRoute");

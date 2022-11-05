@@ -35,7 +35,7 @@ const getUserRecipes = async (_req, res) => {
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
   try {
-    const selectRecipe = await Recipe.findOne({
+    const r = await Recipe.findOne({
       attributes: ["recipeId", "title", "image"],
       include: [
         {
@@ -43,10 +43,43 @@ const getSelectedRecipe = async (req, res) => {
           attributes: ["ingredient", "ingredientId"],
           through: { attributes: ["measurement"] },
         },
+        {
+          model: Method,
+        },
       ],
       where: { recipeId: req.params.id },
+      // raw: true,
     });
-    res.json(selectRecipe);
+
+    console.log(r);
+
+    const ingredients = r.Ingredients.map((ing) => {
+      const { ingredientId, ingredient, RecipeIngredients } = ing.dataValues;
+      return {
+        id: ingredientId,
+        ingredient,
+        measurement: RecipeIngredients.dataValues.measurement,
+      };
+    });
+
+    const methods = r.Methods.map((m) => {
+      const { methodId, stepNum, method } = m.dataValues;
+      return {
+        id: methodId,
+        stepNum,
+        method,
+      };
+    });
+
+    const sendRecipe = {
+      id: r.recipeId,
+      title: r.title,
+      image: r.image,
+      ingredients,
+      methods,
+    };
+
+    res.json(sendRecipe);
   } catch (e) {
     console.log(e);
     res.status(500).send();
