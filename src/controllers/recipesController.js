@@ -1,4 +1,8 @@
 const { sqlize } = require("../utils/dbConnect");
+const express = require("express");
+const app = express();
+app.use("/static", express.static("public"));
+
 const User = require("../models/User");
 const Ingredient = require("../models/Ingredient");
 const Recipe = require("../models/Recipe");
@@ -74,7 +78,9 @@ const getSelectedRecipe = async (req, res) => {
     const sendRecipe = {
       id: r.recipeId,
       title: r.title,
-      image: r.image,
+      image: `http://localhost:${
+        process.env.PORT || 8080
+      }/static/images/dashi-16-9.jpg`,
       ingredients,
       methods,
     };
