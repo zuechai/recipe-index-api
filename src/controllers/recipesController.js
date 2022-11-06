@@ -108,4 +108,107 @@ const getSelectedRecipe = async (req, res) => {
   }
 };
 
-module.exports = { getUserRecipes, getSelectedRecipe };
+const createRecipe = async (req, res) => {
+  try {
+    const recipe = {
+      title: "Fermented Napa Cabbage",
+      image: null,
+      ingredients: [
+        {
+          ingredient: "napa cabbage",
+          measurement: "1 head",
+        },
+        {
+          ingredient: "garlic",
+          measurement: "1 clove",
+        },
+        {
+          ingredient: "rice wine vinegar",
+          measurement: ".5 cup",
+        },
+        {
+          ingredient: "water",
+          measurement: "4 cups",
+        },
+        {
+          ingredient: "salt",
+          measurement: "2 tablespoons",
+        },
+      ],
+      methods: [
+        {
+          stepNum: 1,
+          method:
+            "Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram nri. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard.",
+        },
+        {
+          stepNum: 2,
+          method:
+            "Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram celery.",
+        },
+        {
+          stepNum: 3,
+          method:
+            "Celery quandong  pea potato. Salsify taro catsear garlic gram celery bitterleaf wattle seed collard greens nori. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard.",
+        },
+      ],
+    };
+
+    const user = await User.findOne({
+      where: {
+        username: "zuechai",
+      },
+    });
+
+    const { ingredients, methods } = recipe;
+
+    const createdRec = await Recipe.create(recipe);
+
+    ingredients.forEach(({ ingredient, measurement }) => {
+      const func = async () => {
+        try {
+          const i = await createdRec.createIngredient({
+            ingredient,
+          });
+          await createdRec.addIngredient(found, {
+            through: { measurement },
+          });
+          console.log("*******************************", i);
+        } catch (e) {
+          console.log("DUPLICATE INGREDIENTS");
+          const found = await Ingredient.findOne({
+            where: {
+              ingredient,
+            },
+          });
+          const i = await createdRec.addIngredient(found, {
+            through: { measurement },
+          });
+          console.log("*******************************", i);
+        }
+      };
+      func();
+    });
+
+    methods.forEach((method) => {
+      const func = async () => {
+        console.log(method);
+        const m = await createdRec.createMethod(method);
+        console.log("*******************************", m);
+      };
+      func();
+    });
+
+    try {
+      await user.addRecipe(createdRec);
+    } catch (e) {
+      res.status(500).send('Caught at "user.addRecipe(createdRec)"');
+    }
+
+    res.json("end");
+  } catch (e) {
+    res.status(500).send("Caught at the end of createRecipe()");
+  }
+};
+
+module.exports = { getUserRecipes, getSelectedRecipe, createRecipe };
