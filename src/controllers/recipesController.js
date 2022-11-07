@@ -41,6 +41,8 @@ const getUserRecipes = async (_req, res) => {
   }
 };
 
+const getRecipesBySearch = async (req, res) => {};
+
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
   try {
@@ -225,4 +227,9 @@ const createRecipe = async (req, res) => {
   // }
 };
 
-module.exports = { getUserRecipes, getSelectedRecipe, createRecipe };
+module.exports = {
+  getUserRecipes,
+  getRecipesBySearch,
+  getSelectedRecipe,
+  createRecipe,
+};
