@@ -69,7 +69,7 @@ const getSelectedRecipe = async (req, res) => {
     });
 
     const { recipeId, title, image, createdAt, updatedAt } = r;
-    const { Methods: method, recipeIngredient: ing } = r;
+    const { Methods: methods, recipeIngredient: ing } = r;
 
     const ingredients = ing.map(
       ({ measurement, ingredientId, ingredient: ing }) => {
@@ -89,7 +89,7 @@ const getSelectedRecipe = async (req, res) => {
       createdAt,
       updatedAt,
       ingredients,
-      method,
+      methods,
     };
 
     res.json(recipe);
