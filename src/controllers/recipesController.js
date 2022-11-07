@@ -193,7 +193,8 @@ const createRecipe = async (req, res) => {
     data: {
       recipeId,
       title: recipe.title,
-      image: null,
+      // add string literal here for env
+      image: "http://localhost:5050/static/images/dashi-16-9.jpg",
       user: {
         connect: { userId: user.userId },
       },
