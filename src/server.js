@@ -10,14 +10,23 @@ app.use(express.json());
 app.use(cors());
 app.use("/static", express.static("public"));
 
-const alterSync = async () => {
-  sqlize.sync();
-};
-
-alterSync();
-
 // routes
 const recipesRoute = require("./routes/recipesRoute");
+
+// const createUser = async () => {
+//   try {
+//     await User.create({
+//       firstName: "Calvin",
+//       lastName: "Mayfield Zuech",
+//       username: "zuefield",
+//       email: "calvin.zuefield@gmail.com",
+//     });
+//   } catch (e) {
+//     console.log("User already exists");
+//   }
+// };
+
+// createUser();
 
 app.use("/recipes", recipesRoute);
 

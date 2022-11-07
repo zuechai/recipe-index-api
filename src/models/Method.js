@@ -5,19 +5,12 @@ class Method extends Model {}
 
 Method.init(
   {
-    methodId: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-      primaryKey: true,
-      unique: true,
-    },
     stepNum: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     method: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
   },

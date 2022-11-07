@@ -35,6 +35,7 @@ Recipe.init(
 
 Recipe.hasMany(Method, {
   foreignKey: "recipeId",
+  onDelete: "cascade",
 });
 Method.belongsTo(Recipe, {
   foreignKey: "recipeId",

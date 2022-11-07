@@ -1,51 +1,36 @@
 const { sqlize } = require("../utils/dbConnect");
+const prisma = require("../prisma");
+const { v4: uuidv4 } = require("uuid");
 const express = require("express");
 const app = express();
 app.use("/static", express.static("public"));
 
-const User = require("../models/User");
-const Ingredient = require("../models/Ingredient");
-const Recipe = require("../models/Recipe");
-const Method = require("../models/Method");
-const RecipeIngredient = require("../models/RecipeIngredient");
-
-const userId = "e508e567-8ede-4cf8-ae55-09334696b2a1";
-
 // gets all recipes for the logged in user
 const getUserRecipes = async (_req, res) => {
   // retrieves logged in user from db
-  const user = await User.findOne({
-    where: {
-      userId,
+
+  // await prisma.users.create({
+  //   data: {
+  //     userId: uuidv4(),
+  //     firstName: "Anthony",
+  //     lastName: "Zuech",
+  //     username: "zuechai",
+  //     email: "zuechai@gmail.com",
+  //   },
+  // });
+
+  const user = await prisma.users.findUnique({
+    where: { username: "zuechai" },
+    include: {
+      Recipes: {
+        include: {
+          recipeIngredient: true,
+        },
+      },
     },
   });
-  // gets a list of all recipes with ingredient list
-  const userRecipes = await user.getRecipes({
-    include: [
-      {
-        model: Ingredient,
-        attributes: ["ingredient", "ingredientId"],
-        through: { attributes: [] },
-      },
-    ],
-  });
 
-  const recipes = userRecipes.map((recipe) => {
-    const { recipeId: id, title, image, updatedAt } = recipe;
-    const [...ingArray] = recipe.dataValues.Ingredients;
-    const ingredients = ingArray.map(({ ingredientId, ingredient }) => {
-      return { id: ingredientId, ingredient };
-    });
-    return {
-      id,
-      title,
-      image,
-      ingredients,
-      updatedAt,
-    };
-  });
-
-  res.json(recipes);
+  res.json(user);
   try {
   } catch (e) {
     res.status(500).send(e);
@@ -55,53 +40,55 @@ const getUserRecipes = async (_req, res) => {
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
   try {
-    const r = await Recipe.findOne({
-      attributes: ["recipeId", "title", "image"],
-      include: [
-        {
-          model: Ingredient,
-          attributes: ["ingredient", "ingredientId"],
-          through: { attributes: ["measurement"] },
-        },
-        {
-          model: Method,
-        },
-      ],
+    const r = await prisma.recipes.findUnique({
       where: { recipeId: req.params.id },
-      // raw: true,
+      include: {
+        recipeIngredient: {
+          select: {
+            measurement: true,
+            ingredientId: true,
+            ingredient: {
+              select: {
+                ingredient: true,
+              },
+            },
+          },
+        },
+        Methods: {
+          select: {
+            id: true,
+            stepNum: true,
+            method: true,
+          },
+        },
+      },
     });
 
-    console.log(r);
+    const { recipeId, title, image, createdAt, updatedAt } = r;
+    const { Methods: method, recipeIngredient: ing } = r;
 
-    const ingredients = r.Ingredients.map((ing) => {
-      const { ingredientId, ingredient, RecipeIngredients } = ing.dataValues;
-      return {
-        id: ingredientId,
-        ingredient,
-        measurement: RecipeIngredients.dataValues.measurement,
-      };
-    });
+    const ingredients = ing.map(
+      ({ measurement, ingredientId, ingredient: ing }) => {
+        const { ingredient } = ing;
+        return {
+          ingredientId,
+          measurement,
+          ingredient,
+        };
+      }
+    );
 
-    const methods = r.Methods.map((m) => {
-      const { methodId, stepNum, method } = m.dataValues;
-      return {
-        id: methodId,
-        stepNum,
-        method,
-      };
-    });
-
-    const sendRecipe = {
-      id: r.recipeId,
-      title: r.title,
-      image: `http://localhost:${
-        process.env.PORT || 8080
-      }/static/images/dashi-16-9.jpg`,
+    const recipe = {
+      recipeId,
+      title,
+      image,
+      createdAt,
+      updatedAt,
       ingredients,
-      methods,
+      method,
     };
 
-    res.json(sendRecipe);
+    res.json(recipe);
   } catch (e) {
     console.log(e);
     res.status(500).send();
@@ -109,106 +96,128 @@ const getSelectedRecipe = async (req, res) => {
 };
 
 const createRecipe = async (req, res) => {
-  try {
-    const recipe = {
-      title: "Fermented Napa Cabbage",
-      image: null,
-      ingredients: [
-        {
-          ingredient: "napa cabbage",
-          measurement: "1 head",
-        },
-        {
-          ingredient: "garlic",
-          measurement: "1 clove",
-        },
-        {
-          ingredient: "rice wine vinegar",
-          measurement: ".5 cup",
-        },
-        {
-          ingredient: "water",
-          measurement: "4 cups",
-        },
-        {
-          ingredient: "salt",
-          measurement: "2 tablespoons",
-        },
-      ],
-      methods: [
-        {
-          stepNum: 1,
-          method:
-            "Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram nri. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard.",
-        },
-        {
-          stepNum: 2,
-          method:
-            "Celery quandong swiss chard chicory earthnut pea potato. Salsify taro catsear garlic gram celery.",
-        },
-        {
-          stepNum: 3,
-          method:
-            "Celery quandong  pea potato. Salsify taro catsear garlic gram celery bitterleaf wattle seed collard greens nori. Grape wattle seed kombu beetroot horseradish carrot squash brussels sprout chard.",
-        },
-      ],
-    };
-
-    const user = await User.findOne({
-      where: {
-        username: "zuechai",
+  // try {
+  const recipe = {
+    title: "Guacamole",
+    image: null,
+    ingredients: [
+      {
+        ingredient: "onion",
+        measurement: "2 tablespoon",
       },
-    });
+      {
+        ingredient: "garlic",
+        measurement: "1 clove",
+      },
+      {
+        ingredient: "jalapeno",
+        measurement: "1 seeded",
+      },
+      {
+        ingredient: "cilantro",
+        measurement: ".25 cup",
+      },
+      {
+        ingredient: "avocados",
+        measurement: "2",
+      },
+      {
+        ingredient: "lime",
+        measurement: "2 tablespoons",
+      },
+      {
+        ingredient: "salt",
+        measurement: "1 teaspoon",
+      },
+    ],
+    methods: [
+      {
+        stepNum: 1,
+        method: "Tortillas Earthnut pea potato.",
+      },
+      {
+        stepNum: 2,
+        method: "Griddle Quandong swiss chard.",
+      },
+      {
+        stepNum: 3,
+        method:
+          "Wrap to steam with residual heat. Salsify taro catsear garlic gram celery.",
+      },
+    ],
+  };
 
-    const { ingredients, methods } = recipe;
+  const user = await prisma.users.findUnique({
+    where: {
+      username: "zuechai",
+    },
+  });
 
-    const createdRec = await Recipe.create(recipe);
+  const recipeId = uuidv4();
 
-    ingredients.forEach(({ ingredient, measurement }) => {
-      const func = async () => {
-        try {
-          const i = await createdRec.createIngredient({
-            ingredient,
-          });
-          await createdRec.addIngredient(found, {
-            through: { measurement },
-          });
-          console.log("*******************************", i);
-        } catch (e) {
-          console.log("DUPLICATE INGREDIENTS");
-          const found = await Ingredient.findOne({
-            where: {
-              ingredient,
-            },
-          });
-          const i = await createdRec.addIngredient(found, {
-            through: { measurement },
-          });
-          console.log("*******************************", i);
-        }
-      };
-      func();
-    });
+  const { ingredients, methods } = recipe;
 
-    methods.forEach((method) => {
-      const func = async () => {
-        console.log(method);
-        const m = await createdRec.createMethod(method);
-        console.log("*******************************", m);
-      };
-      func();
-    });
+  ingredients.forEach(({ measurement, ingredient }) => {
+    console.log(ingredient);
+    const create = async () => {
+      let found = await prisma.ingredients.findUnique({
+        where: { ingredient: ingredient },
+        select: {
+          ingredientId: true,
+        },
+      });
+      console.log(found);
+      if (!found) {
+        found = await prisma.ingredients.create({
+          data: { ingredient: ingredient },
+        });
+        console.log(found);
+      }
+      const result = await prisma.recipeIngredients.create({
+        data: {
+          measurement: measurement,
+          ingredientId: found.ingredientId,
+          recipeId: recipeId,
+        },
+      });
+      console.log(result);
+    };
+    create();
+  });
 
-    try {
-      await user.addRecipe(createdRec);
-    } catch (e) {
-      res.status(500).send('Caught at "user.addRecipe(createdRec)"');
-    }
-
-    res.json("end");
-  } catch (e) {
-    res.status(500).send("Caught at the end of createRecipe()");
-  }
+  const createdRec = await prisma.recipes.create({
+    data: {
+      recipeId,
+      title: recipe.title,
+      image: null,
+      user: {
+        connect: { userId: user.userId },
+      },
+      Methods: {
+        create: methods,
+      },
+    },
+    include: {
+      recipeIngredient: {
+        select: {
+          id: true,
+          measurement: true,
+          ingredientId: true,
+        },
+      },
+      Methods: {
+        select: {
+          id: true,
+          stepNum: true,
+          method: true,
+        },
+      },
+    },
+  });
+  res.json(createdRec);
+  // } catch (e) {
+  //   res.status(500).send("Caught at the end of createRecipe()");
+  // }
 };
 
 module.exports = { getUserRecipes, getSelectedRecipe, createRecipe };

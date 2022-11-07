@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": "C@rolin@06",
+    "database": "recipe_index",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
