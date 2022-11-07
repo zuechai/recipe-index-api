@@ -1,4 +1,3 @@
-const { sqlize } = require("../utils/dbConnect");
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
 const express = require("express");
@@ -19,18 +18,23 @@ const getUserRecipes = async (_req, res) => {
   //   },
   // });
 
-  const user = await prisma.users.findUnique({
-    where: { username: "zuechai" },
+  const recipes = await prisma.recipes.findMany({
+    where: { userId: "7837da5a-8f34-4a2d-9b3e-28890e3e9690" },
     include: {
-      Recipes: {
-        include: {
-          recipeIngredient: true,
+      recipeIngredient: {
+        select: {
+          ingredientId: true,
+          ingredient: {
+            select: {
+              ingredient: true,
+            },
+          },
         },
       },
     },
   });
 
-  res.json(user);
+  res.json(recipes);
   try {
   } catch (e) {
     res.status(500).send(e);
