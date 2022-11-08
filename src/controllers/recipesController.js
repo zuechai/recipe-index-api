@@ -21,10 +21,10 @@ const getUserRecipes = async (_req, res) => {
   const recipes = await prisma.recipes.findMany({
     where: { userId: "7837da5a-8f34-4a2d-9b3e-28890e3e9690" },
     include: {
-      recipeIngredient: {
+      recipeIngredients: {
         select: {
           ingredientId: true,
-          ingredient: {
+          ingredients: {
             select: {
               ingredient: true,
             },
@@ -34,14 +34,60 @@ const getUserRecipes = async (_req, res) => {
     },
   });
 
-  res.json(recipes);
+  const structured = recipes.map(
+    ({ recipeId, title, image, userId, recipeIngredients: ings }) => {
+      const ingredients = ings.map(({ ingredientId, ingredients }) => {
+        const { ingredient } = ingredients;
+        return { ingredientId, ingredient };
+      });
+      return {
+        recipeId,
+        title,
+        image,
+        userId,
+        ingredients,
+      };
+    }
+  );
+
+  res.json(structured);
   try {
   } catch (e) {
     res.status(500).send(e);
   }
 };
 
-const getRecipesBySearch = async (req, res) => {};
+const getRecipesBySearch = async (req, res) => {
+  const query = req.query.q;
+  console.log(query);
+
+  const results = await prisma.recipeIngredients.findMany({
+    select: {
+      recipes: true,
+    },
+    distinct: ["recipeId"],
+    where: {
+      OR: [
+        {
+          recipes: {
+            title: {
+              contains: query,
+            },
+          },
+        },
+        {
+          ingredients: {
+            ingredient: {
+              contains: query,
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  res.json(results);
+};
 
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
@@ -49,18 +95,18 @@ const getSelectedRecipe = async (req, res) => {
     const r = await prisma.recipes.findUnique({
       where: { recipeId: req.params.id },
       include: {
-        recipeIngredient: {
+        recipeIngredients: {
           select: {
             measurement: true,
             ingredientId: true,
-            ingredient: {
+            ingredients: {
               select: {
                 ingredient: true,
               },
             },
           },
         },
-        Methods: {
+        methods: {
           select: {
             id: true,
             stepNum: true,
@@ -71,11 +117,13 @@ const getSelectedRecipe = async (req, res) => {
     });
 
     const { recipeId, title, image, createdAt, updatedAt } = r;
-    const { Methods: methods, recipeIngredient: ing } = r;
+    const { methods: methods, recipeIngredients: ings } = r;
 
-    const ingredients = ing.map(
-      ({ measurement, ingredientId, ingredient: ing }) => {
-        const { ingredient } = ing;
+    console.log(ings);
+
+    const ingredients = ings.map(
+      ({ measurement, ingredientId, ingredients: i }) => {
+        const { ingredient } = i;
         return {
           ingredientId,
           measurement,
@@ -164,30 +212,29 @@ const createRecipe = async (req, res) => {
   const { ingredients, methods } = recipe;
 
   ingredients.forEach(({ measurement, ingredient }) => {
-    console.log(ingredient);
     const create = async () => {
-      let found = await prisma.ingredients.findUnique({
+      const found = await prisma.ingredients.findUnique({
         where: { ingredient: ingredient },
         select: {
           ingredientId: true,
         },
       });
-      console.log(found);
+
       if (!found) {
-        found = await prisma.ingredients.create({
+        await prisma.ingredients.create({
           data: { ingredient: ingredient },
         });
-        console.log(found);
       }
-      const result = await prisma.recipeIngredients.create({
+
+      await prisma.recipeIngredients.create({
         data: {
           measurement: measurement,
           ingredientId: found.ingredientId,
           recipeId: recipeId,
         },
       });
-      console.log(result);
     };
+
     create();
   });
 
@@ -197,22 +244,22 @@ const createRecipe = async (req, res) => {
       title: recipe.title,
       // add string literal here for env
       image: "http://localhost:5050/static/images/dashi-16-9.jpg",
-      user: {
+      users: {
         connect: { userId: user.userId },
       },
-      Methods: {
+      methods: {
         create: methods,
       },
     },
     include: {
-      recipeIngredient: {
+      recipeIngredients: {
         select: {
           id: true,
           measurement: true,
           ingredientId: true,
         },
       },
-      Methods: {
+      methods: {
         select: {
           id: true,
           stepNum: true,
