@@ -62,6 +62,9 @@ const getRecipesBySearch = async (req, res) => {
   console.log(query);
 
   const results = await prisma.recipeIngredients.findMany({
+    orderBy: {
+      updatedAt: "desc",
+    },
     select: {
       recipes: true,
     },
@@ -86,7 +89,9 @@ const getRecipesBySearch = async (req, res) => {
     },
   });
 
-  res.json(results);
+  const recipes = results.map(({ recipes }) => recipes);
+
+  res.json(recipes);
 };
 
 // gets a single recipe by id
