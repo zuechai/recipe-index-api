@@ -4,59 +4,6 @@ const express = require("express");
 const app = express();
 app.use("/static", express.static("public"));
 
-// gets all recipes for the logged in user
-const getUserRecipes = async (_req, res) => {
-  // retrieves logged in user from db
-
-  // await prisma.users.create({
-  //   data: {
-  //     userId: uuidv4(),
-  //     firstName: "Anthony",
-  //     lastName: "Zuech",
-  //     username: "zuechai",
-  //     email: "zuechai@gmail.com",
-  //   },
-  // });
-
-  const recipes = await prisma.recipes.findMany({
-    where: { userId: "7837da5a-8f34-4a2d-9b3e-28890e3e9690" },
-    include: {
-      recipeIngredients: {
-        select: {
-          ingredientId: true,
-          ingredients: {
-            select: {
-              ingredient: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const structured = recipes.map(
-    ({ recipeId, title, image, userId, recipeIngredients: ings }) => {
-      const ingredients = ings.map(({ ingredientId, ingredients }) => {
-        const { ingredient } = ingredients;
-        return { ingredientId, ingredient };
-      });
-      return {
-        recipeId,
-        title,
-        image,
-        userId,
-        ingredients,
-      };
-    }
-  );
-
-  res.json(structured);
-  try {
-  } catch (e) {
-    res.status(500).send(e);
-  }
-};
-
 const getRecipesBySearch = async (req, res) => {
   const query = req.query.q;
   console.log(query);
@@ -157,7 +104,7 @@ const getSelectedRecipe = async (req, res) => {
 const createRecipe = async (req, res) => {
   // try {
   const recipe = {
-    title: "Guacamole",
+    title: "Tortillas",
     image: null,
     ingredients: [
       {
@@ -204,6 +151,7 @@ const createRecipe = async (req, res) => {
           "Wrap to steam with residual heat. Salsify taro catsear garlic gram celery.",
       },
     ],
+    collaborators: [{ userId: "8c6ae494-fd87-448d-b688-999784613c80" }],
   };
 
   const user = await prisma.users.findUnique({
@@ -280,7 +228,6 @@ const createRecipe = async (req, res) => {
 };
 
 module.exports = {
-  getUserRecipes,
   getRecipesBySearch,
   getSelectedRecipe,
   createRecipe,

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Ingredients {
-  ingredientId     Int                 @id @unique(map: "ingredientId") @default(autoincrement())
-  ingredient       String              @unique(map: "ingredient") @db.VarChar(255)
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  ingredientId      Int                 @id @unique(map: "ingredientId") @default(autoincrement())
+  ingredient        String              @unique(map: "ingredient") @db.VarChar(255)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   recipeIngredients RecipeIngredients[]
 }
 
@@ -19,7 +19,7 @@ model Methods {
   id        Int      @id @unique(map: "id") @default(autoincrement())
   stepNum   Int
   method    String   @db.Text
-  recipes    Recipes  @relation(fields: [recipeId], references: [recipeId], onDelete: Cascade, onUpdate: Cascade)
+  recipes   Recipes  @relation(fields: [recipeId], references: [recipeId], onDelete: Cascade, onUpdate: Cascade)
   recipeId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,7 +30,7 @@ model RecipeIngredients {
   measurement  String?     @db.VarChar(255)
   recipes      Recipes     @relation(fields: [recipeId], references: [recipeId], onDelete: Cascade, onUpdate: Cascade)
   recipeId     String
-  ingredients   Ingredients @relation(references: [ingredientId], fields: [ingredientId])
+  ingredients  Ingredients @relation(references: [ingredientId], fields: [ingredientId])
   ingredientId Int
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -39,24 +39,35 @@ model RecipeIngredients {
 }
 
 model Recipes {
-  recipeId         String              @id @unique(map: "recipeId") @db.Char(36)
-  title            String              @db.VarChar(255)
-  image            String?             @db.VarChar(255)
+  recipeId          String              @id @unique(map: "recipeId") @db.Char(36)
+  title             String              @db.VarChar(255)
+  image             String?             @db.VarChar(255)
   users             Users               @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
-  userId           String
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  userId            String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   recipeIngredients RecipeIngredients[]
-  methods          Methods[]
+  methods           Methods[]
+  Collaborators     Collaborators[]
 }
 
 model Users {
-  userId    String    @id @unique(map: "userId") @db.Char(36)
-  username  String    @unique(map: "username") @db.VarChar(255)
-  firstName String    @db.VarChar(255)
-  lastName  String    @db.VarChar(255)
-  email     String    @unique(map: "email") @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  recipes   Recipes[]
+  userId        String          @id @unique(map: "userId") @db.Char(36)
+  username      String          @unique(map: "username") @db.VarChar(255)
+  firstName     String          @db.VarChar(255)
+  lastName      String          @db.VarChar(255)
+  email         String          @unique(map: "email") @db.VarChar(255)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  recipes       Recipes[]
+  Collaborators Collaborators[]
+}
+
+model Collaborators {
+  recipes  Recipes @relation(fields: [recipeId], references: [recipeId], onDelete: Cascade, onUpdate: Cascade)
+  recipeId String
+  users    Users   @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+  userId   String
+
+  @@id([recipeId, userId])
 }

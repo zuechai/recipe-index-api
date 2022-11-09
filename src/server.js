@@ -11,23 +11,10 @@ app.use("/static", express.static("public"));
 
 // routes
 const recipesRoute = require("./routes/recipesRoute");
-
-// const createUser = async () => {
-//   try {
-//     await User.create({
-//       firstName: "Calvin",
-//       lastName: "Mayfield Zuech",
-//       username: "zuefield",
-//       email: "calvin.zuefield@gmail.com",
-//     });
-//   } catch (e) {
-//     console.log("User already exists");
-//   }
-// };
-
-// createUser();
+const usersRoute = require("./routes/usersRoute");
 
 app.use("/recipes", recipesRoute);
+app.use("/users", usersRoute);
 
 // run server
 const PORT = process.env.PORT || 8080;

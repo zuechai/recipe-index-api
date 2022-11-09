@@ -1,30 +1,61 @@
-try {
-  const signUpUser = {
-    first_name: "Calvin",
-    last_name: "Mayfield Zuech",
-    user_name: "zuefield",
-    google_id: "calvin.zuefield@gmail.com",
-  };
+const prisma = require("../prisma");
+const { v4: uuidv4 } = require("uuid");
+const express = require("express");
+const app = express();
+// app.use("/static", express.static("public"));
 
-  const users = await User.findAll({
+// create new user
+const createUser = async (req, res) => {
+  const newUser = {
+    userId: uuidv4(),
+    firstName: "Mollie",
+    lastName: "Mayfield",
+    username: "mollieMay",
+    email: "mollie.mayfield@gmail.com",
+  };
+  try {
+    const foundUser = await prisma.users.findUnique({
+      where: { username: newUser.username },
+    });
+
+    if (!foundUser) {
+      const created = await prisma.users.create({
+        data: {
+          ...newUser,
+        },
+      });
+      res.json(created);
+    }
+    res.status(400).send({ message: "User already exist." });
+  } catch (e) {
+    console.log(`Error =====>\n${e}`);
+    res.status(500).send(e);
+  }
+};
+
+const findUser = async (req, res) => {
+  const query = req.query.u;
+  // try {
+  const foundUser = await prisma.users.findMany({
     where: {
-      user_name: signUpUser.user_name,
-      google_id: signUpUser.google_id,
+      OR: {
+        email: { contains: query },
+
+        username: { contains: query },
+      },
     },
-    raw: true,
   });
 
-  if (users.length > 0) {
-    const foundUser = users.find(
-      (user) => user.google_id === "zuechai@gmail.com"
-    );
-    console.log("A user already exists with this email");
-    console.log(foundUser);
-    return;
+  if (!foundUser) {
+    res.status(400).send("User does not exist");
   }
-  console.log("Success! Account created!");
-  await User.create({ ...signUpUser });
-  return;
-} catch (e) {
-  console.log(`Error =====>\n${e}`);
-}
+
+  res.json(foundUser);
+  // } catch (e) {
+  //   res.status(500).send({ error: e });
+  // }
+};
+
+// retrieves logged in user from db
+
+module.exports = { createUser, findUser };

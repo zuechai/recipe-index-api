@@ -17,7 +17,6 @@
   "author": "Anthony Zuech",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^4.5.0",
     "axios": "^1.1.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -30,6 +29,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "prisma": "^4.5.0"
+    "@prisma/client": "^4.6.0",
+    "i": "^0.3.7",
+    "npm": "^8.19.3",
+    "prisma": "^4.6.0"
   }
 }

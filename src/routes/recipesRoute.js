@@ -12,9 +12,7 @@ const {
   createRecipe,
 } = require("../controllers/recipesController");
 
-// get all recipes where user_id === user.id
-router.get("/", getUserRecipes);
-
+// get all recipes where user_id === user.id and matches search query if present
 router.get("/search", getRecipesBySearch);
 
 // get single recipe where user_id === user.id && recipe_id === :id
