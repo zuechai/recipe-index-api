@@ -33,10 +33,15 @@ const createUser = async (req, res) => {
   }
 };
 
-const findUser = async (req, res) => {
+const findUsers = async (req, res) => {
   const query = req.query.u;
   // try {
   const foundUser = await prisma.users.findMany({
+    select: {
+      userId: true,
+      username: true,
+      email: true,
+    },
     where: {
       OR: {
         email: { contains: query },
@@ -46,7 +51,7 @@ const findUser = async (req, res) => {
     },
   });
 
-  if (!foundUser) {
+  if (!foundUser.length) {
     res.status(400).send("User does not exist");
   }
 
@@ -56,6 +61,8 @@ const findUser = async (req, res) => {
   // }
 };
 
+const findCollaborators = async () => {};
+
 // retrieves logged in user from db
 
-module.exports = { createUser, findUser };
+module.exports = { createUser, findUsers };
