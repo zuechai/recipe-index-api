@@ -1,0 +1,513 @@
+[
+  {
+    "title": "Guacamole",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "3 tablespoons",
+        "ingredient": "onion"
+      },
+      {
+        "measurement": "1 clove",
+        "ingredient": "garlic"
+      },
+      {
+        "measurement": "1 teaspoon",
+        "ingredient": "jalapeno"
+      },
+      {
+        "measurement": "1 tablespoon",
+        "ingredient": "cilantro"
+      },
+      {
+        "measurement": "1",
+        "ingredient": "avocado"
+      },
+      {
+        "measurement": ".5 teaspoon",
+        "ingredient": "salt"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "In a medium-size bowl, mortar or a Mexican molcajete (lava stone mortar), thoroughly mash 1 tablespoon of the onion with the chili, cilantro and the salt to make a paste."
+      },
+      {
+        "stepNum": 2,
+        "method": "Cut the tomato in half horizontally, squeeze out the juice and seeds and discard. Chop pulp, and add it to the bowl."
+      },
+      {
+        "stepNum": 3,
+        "method": "Cut the avocado in half lengthwise, cutting around the pit. Gently twist the top half of the avocado off to separate the halves. Carefully rap the pit with the edge of a sharp knife and twist it out. Using a paring knife slice the avocado flesh of both halves lengthwise, then crosswise, cutting down to the skin, to form a grid. Scoop the avocado into the bowl with a spoon."
+      },
+      {
+        "stepNum": 4,
+        "method": "Add the remaining onion and cilantro, and gently fold all the ingredients together. Season with more chili and salt if desired. Serve"
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Carne Adobada",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "2",
+        "ingredient": "guajillo chiles"
+      },
+      {
+        "measurement": ".5",
+        "ingredient": "yellow onion"
+      },
+      {
+        "measurement": "3 cloves",
+        "ingredient": "garlic "
+      },
+      {
+        "measurement": "1 teaspoon ",
+        "ingredient": "cumin seeds"
+      },
+      {
+        "measurement": ".25 cup ",
+        "ingredient": "lime juice"
+      },
+      {
+        "measurement": "1.5 pounds ",
+        "ingredient": "flank steak"
+      },
+      {
+        "measurement": null,
+        "ingredient": "salt"
+      },
+      {
+        "measurement": "2 teaspoons ",
+        "ingredient": "dried oregano"
+      },
+      {
+        "measurement": ".5 cup ",
+        "ingredient": "roasted red peppers"
+      },
+      {
+        "measurement": "2",
+        "ingredient": "shallots"
+      },
+      {
+        "measurement": null,
+        "ingredient": "extra-virgin olive oil"
+      },
+      {
+        "measurement": ".5 cup",
+        "ingredient": "cilantro"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Place the dried guajillo chiles in a small bowl and add enough hot water to cover; soak until softened, about 10 minutes. Drain, stem and seed the chiles. Using a blender or a food processor, puree the guajillos, chipotle, onion, garlic, cumin, 2 tablespoons lime juice and 2 tablespoons water until smooth. If needed, add another tablespoon of water to help the mixture blend."
+      },
+      {
+        "stepNum": 2,
+        "method": "Pat the steak dry with paper towels. Season generously on both sides with salt, then sprinkle and pat on the dried oregano to both sides as well. Place in a large bowl, dish or resealable plastic bag, pour the chile marinade over the top and turn to coat both sides. Marinate for at least 30 minutes at room temperature, or refrigerate, covered if needed, for up to 12 hours."
+      },
+      {
+        "stepNum": 3,
+        "method": "In a small bowl, combine the roasted red peppers and shallots with the remaining 2 tablespoons lime juice and 1 tablespoon olive oil. Season to taste with salt, add the cilantro and stir to combine. Set aside."
+      },
+      {
+        "stepNum": 4,
+        "method": "In a large heavy skillet, heat 1 tablespoon oil over medium-high heat. Scrape any excess marinade off the steak and discard the marinade. Place the steak in the hot oil and cook until seared and deep golden brown on the contact side, 4 to 5 minutes. Flip and continue to cook until seared and golden brown on the other side, 4 to 5 minutes for medium-rare. Cook for 1 additional minute on each side for thicker or larger cuts of steak or for medium doneness. You also can grill the steak on a hot charcoal or gas grill, turning once, until seared, about 6 minutes per side for medium-rare."
+      },
+      {
+        "stepNum": 5,
+        "method": "Transfer the steak to a cutting board and allow to rest for 5 minutes. Slice the steak against the grain. Serve topped with the roasted pepper-shallot relish, alongside steamed rice or warm tortillas."
+      },
+      {
+        "stepNum": 6,
+        "method": "Copied from NY Times Cooking"
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Tortillas",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "1 pound",
+        "ingredient": "masa"
+      },
+      {
+        "measurement": "1 tablespoon",
+        "ingredient": "canola oil"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Heat a cast-iron pan or griddle over medium-high heat. Coat with a thin layer of oil, using a paper towel to distribute it evenly."
+      },
+      {
+        "stepNum": 1,
+        "method": "Portion masa into 12 pieces. Press with a tortilla press lined with parchment or plastic."
+      },
+      {
+        "stepNum": 1,
+        "method": "Gently peel the pressed masa and lay it on the griddle. Cook for 15 seconds or just until it peels from the pan, then flip it. Cook for another 30 seonds. Flip it once more and let it cook until it puffs up. Once puffed, flip one last time and cook for another 15 to 20 seconds."
+      },
+      {
+        "stepNum": 1,
+        "method": "Loosely wrap in a cotton linen while you continue cooking the remaining tortillas. As you cook the tortillas, stack them on top of one another in the linen and let them steam as you continue cooking. Once all the tortillas are cooked, serve immediately with prepared fillings."
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Roasted Squash With Spiced Onion Gravy",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "3 pounds",
+        "ingredient": "honeynut squash"
+      },
+      {
+        "measurement": "6 tablespoons",
+        "ingredient": "ghee"
+      },
+      {
+        "measurement": "1.5 teaspoons",
+        "ingredient": "ground turmeric"
+      },
+      {
+        "measurement": "1 tablespoon",
+        "ingredient": "ground cumin"
+      },
+      {
+        "measurement": "2 teaspoons",
+        "ingredient": "ground coriander"
+      },
+      {
+        "measurement": "1.5 teaspoons",
+        "ingredient": "Kashmiri chile powder"
+      },
+      {
+        "measurement": "1",
+        "ingredient": "onion"
+      },
+      {
+        "measurement": "1-inch piece",
+        "ingredient": "fresh ginger"
+      },
+      {
+        "measurement": "1 tablespoon",
+        "ingredient": "apple cider vinegar"
+      },
+      {
+        "measurement": ".5 cup",
+        "ingredient": "cilantro"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Roast the squash: Arrange a rack in the middle of the oven and heat to 450 degrees. Line a rimmed baking sheet with parchment paper."
+      },
+      {
+        "stepNum": 2,
+        "method": "Scrub the squash, then remove the stem and cut in half lengthwise. Use a spoon to scoop out the seeds and discard. Cut the squash crosswise into ½-inch thick slices and transfer to the prepared baking sheet."
+      },
+      {
+        "stepNum": 3,
+        "method": "Drizzle over the 3 tablespoons of melted ghee, then sprinkle over 1 ½ teaspoons salt and 1 teaspoon turmeric. Use your hands to evenly coat the squash with the seasonings, and arrange in roughly a single layer. Roast until browned and tender, rotating the pan once during cooking, 30 to 35 minutes."
+      },
+      {
+        "stepNum": 4,
+        "method": "In the meantime, prepare the gravy: In a small bowl combine the cumin, coriander, chile and remaining ½ teaspoon turmeric and have it handy."
+      },
+      {
+        "stepNum": 5,
+        "method": "In a large skillet, heat the remaining 3 tablespoons ghee over medium-high for 1 minute. Add the onion and cook, stirring frequently, until frizzled and browned, with some blackened bits, about 15 minutes. (You will develop lots of dark brown bits on the bottom of the skillet, this is just what you want.)"
+      },
+      {
+        "stepNum": 6,
+        "method": "Add the spices in the bowl and the ginger, and cook until fragrant and sticking to the bottom of the skillet, stirring constantly, about 1 minute. Add vinegar and 1 cup water. Scrape up all browned bits with a stiff wooden spoon and bring the mixture to a simmer. Season generously with salt, to taste. (If the mixture tastes too acidic or spicy, you likely need more salt.)"
+      },
+      {
+        "stepNum": 7,
+        "method": "Arrange the squash on a platter, top with gravy, garnish with cilantro, and serve right away with steamed rice (or roti) and salted yogurt."
+      },
+      {
+        "stepNum": 8,
+        "method": "Copied from NY Times Cooking"
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Mock Frites",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "1 pound",
+        "ingredient": "baby yukon gold potatoes"
+      },
+      {
+        "measurement": null,
+        "ingredient": "neutral oil"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Set a large pot filled with salted water on the stove. Add potatoes, turn heat to high and cook, gently boiling, until they are softened, approximately 15 minutes. Drain potatoes, and dry them well."
+      },
+      {
+        "stepNum": 2,
+        "method": "Grease a sheet pan with half the oil, and put the potatoes on the pan. Using a potato masher or the bottom of a heavy glass, gently smash each potato, pressing it down to a thickness of less than an inch. Drizzle the rest of the oil over the smashed potatoes, place on top rack in the oven and allow to roast until the exteriors are golden and crunchy, approximately 20 to 25 minutes. Add salt to taste."
+      },
+      {
+        "stepNum": 3,
+        "method": "Remove the potatoes from the oven, and season them with salt and a grind of pepper. Serve immediately."
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Sorghum & Spelt Bagels",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "530 mililiters",
+        "ingredient": "water"
+      },
+      {
+        "measurement": "2 tablespoons",
+        "ingredient": "sorghum molasses"
+      },
+      {
+        "measurement": "2.25 teaspoons",
+        "ingredient": "active dry yeast"
+      },
+      {
+        "measurement": "500 grams",
+        "ingredient": "bread flour"
+      },
+      {
+        "measurement": "385 grams",
+        "ingredient": "spelt flour"
+      },
+      {
+        "measurement": "17 grams",
+        "ingredient": "salt"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Pour ½ cup/120 milliliters lukewarm water into a small bowl. Whisk in 2 tablespoons barley malt syrup and the packet of yeast until both dissolve. Let sit until the mixture foams, about 5 minutes."
+      },
+      {
+        "stepNum": 2,
+        "method": "In a large bowl, combine bread flour and salt (and whole-wheat flour, if using), and make a well in the center. Pour in yeast mixture and the remaining 1¾ cups/420 milliliters lukewarm water, and mix, using the flexible spatula or wooden spoon, until the dough is shaggy."
+      },
+      {
+        "stepNum": 3,
+        "method": "Knead the mixture in the bowl several times, continuously folding it over and onto itself and pressing down firmly to bring it together in a solid mass, then turn it out onto a clean work surface. Continue kneading until there are no dry spots, then, adding more flour only if needed to prevent stubborn sticking, until you have a stiff but very smooth dough that is still slightly tacky, 15 to 20 minutes."
+      },
+      {
+        "stepNum": 4,
+        "method": "Gather the dough into a ball, dust it lightly with flour, and place it in a large, clean bowl, seam-side down. Cover with a damp towel and let the dough rise at room temperature until it has doubled in size, 1½ to 2 hours."
+      },
+      {
+        "stepNum": 5,
+        "method": "Using your fist, lightly punch down the dough to knock out some of the air, and turn it out onto a clean work surface. Using a bench scraper, cut the dough into 12 equal pieces, either eyeballing it or using a scale to weigh out 4⅓-ounce/125-gram pieces. If you prefer a slightly smaller bagel, which is more traditional, you could make a baker’s dozen (13) and weigh out 4-ounce portions. "
+      },
+      {
+        "stepNum": 6,
+        "method": "Before you form the bagels, preshape the pieces into tight balls. Working one ball at a time, gather all the irregular edges and pinch them together firmly to make a teardrop shape (above). Place the dough seam-side down on the surface and cup your hand down and over top of the dough in a loose grip (like a claw, or like you’re playing the piano). Move your hand in a rapid circular motion, dragging the dough across the surface until it has a high, tight dome. Repeat with all the pieces, then cover them with the damp towel and let rest for 5 minutes."
+      },
+      {
+        "stepNum": 7,
+        "method": "Line two large rimmed baking sheets with parchment paper, brush lightly with oil, and set aside. Working one piece at a time, roll out a ball on the surface beneath your palms into a 9-inch-long rope. Apply extra pressure at the ends of the rope to thin them slightly, then wrap the rope around one hand where your palm and fingers meet, overlapping the ends by an inch or two along the inside of your hand (above)."
+      },
+      {
+        "stepNum": 8,
+        "method": "Roll the dough under your hand back and forth several times to seal together the ends, then slip the ring of dough off your hand and stretch it to even out the thickness all the way around until you have a ring that measures about 4 inches across (above). As you form each ring, place it on a parchment-lined sheet, arranging six to a sheet and spacing evenly."
+      },
+      {
+        "stepNum": 9,
+        "method": "When you’ve formed all the bagels, cover each baking sheet with a piece of plastic, followed by a damp towel to create a sealed, moist environment for the bagels to proof slowly. Transfer the baking sheets to the refrigerator and chill at least 4 hours and up to 24."
+      },
+      {
+        "stepNum": 10,
+        "method": "About 2 hours before you’d like to serve the bagels, arrange an oven rack in the center position and heat the oven to 450 degrees. Fill a large, wide Dutch oven halfway with water and place it on the stove. (Heat should be off at this point.) Set a wire rack next to the Dutch oven. If topping the bagels, spread several tablespoons each of sesame seeds, poppy seeds, caraway seeds, dried minced garlic, dried minced onion and flaky salt on separate large plates in generous, even layers. Set the plates of toppings next to the wire rack."
+      },
+      {
+        "stepNum": 11,
+        "method": "Remove one baking sheet from the refrigerator. Fill a small bowl with room temperature water, then carefully peel one ring of dough off the parchment paper and transfer it to the bowl. It should float, indicating that the bagels are ready to boil and bake. Remove the ring from the water, pat it dry on a towel and place back on the baking sheet. Remove the other baking sheet from the refrigerator. "
+      },
+      {
+        "stepNum": 12,
+        "method": "Set the Dutch oven over high heat and bring to a boil. Whisk in the baking soda and ¼ cup barley malt syrup. You want the water to look like strong black tea, so add more barley malt syrup by the tablespoon until it does. Bring everything back to a boil, reduce the heat if necessary to maintain a gentle boil, and skim any foam from the surface. Uncover one baking sheet and carefully transfer as many bagels as will comfortably fit in one layer to the Dutch oven, leaving some room for them to bob around. Boil for 1 minute, turning halfway through"
+      },
+      {
+        "stepNum": 13,
+        "method": "Use a spider or slotted spoon to transfer the bagels to the wire rack and repeat with the remaining bagels on the first sheet. The bagels will swell in the water, then deflate when removed, but they will puff up again in the oven. Discard the piece of parchment that was underneath the bagels but reserve the baking sheet."
+      },
+      {
+        "stepNum": 14,
+        "method": "Add the optional topping: Working with one at a time, place a boiled bagel on one of the plates with the toppings and turn to coat so the topping adheres to the wet surface of the dough on both sides. Place the coated bagels on the empty baking sheet, flat-side down, and repeat with the remaining boiled bagels, spacing evenly."
+      },
+      {
+        "stepNum": 15,
+        "method": "Transfer the baking sheet to the oven and bake until the bagels are deeply brown, 20 to 25 minutes, rotating the baking sheet 180 degrees after 12 minutes."
+      },
+      {
+        "stepNum": 16,
+        "method": "While the first sheet of bagels is in the oven, repeat the boiling and coating process with the second sheet, adding more toppings to the plates as needed. Transfer the second sheet to the oven when the first is finished. Let the bagels cool completely on a wire rack before slicing with a serrated knife."
+      }
+    ],
+    "collaborators": null
+  },
+
+  {
+    "title": "Radicchio Caesar Salad",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "2 ounces",
+        "ingredient": "oil-packed anchovy fillet"
+      },
+      {
+        "measurement": ".5 cup",
+        "ingredient": "panko bread crumbs"
+      },
+      {
+        "measurement": "1 clove",
+        "ingredient": "garlic"
+      },
+      {
+        "measurement": "3 tablespoons",
+        "ingredient": "extra-virgin olive oil"
+      },
+      {
+        "measurement": "1",
+        "ingredient": "egg yolk"
+      },
+      {
+        "measurement": "1 tablespoon",
+        "ingredient": "lemon juice"
+      },
+      {
+        "measurement": "2 tablespoons",
+        "ingredient": "parmesan cheese"
+      },
+      {
+        "measurement": "1 teaspoon",
+        "ingredient": "ground black pepper"
+      },
+      {
+        "measurement": "1 pound",
+        "ingredient": "radicchio"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Prepare the bread crumbs: Add all of the anchovy oil from the tin (about 2 tablespoons) to a large skillet. Transfer the anchovies from their tin to a cutting board, draining them well. Finely chop 2 anchovies and add to the skillet, then turn the heat to medium-high. Cook the anchovies, stirring occasionally, until they start to sizzle, about 1 minute. Stir in the bread crumbs and cook, stirring constantly, until golden and toasted, 5 minutes. Transfer to a paper towel-lined plate."
+      },
+      {
+        "stepNum": 2,
+        "method": "Make the dressing: Set aside 4 anchovies (for garnish later) and finely chop the rest (there should be about 6). Add the chopped anchovies to a large bowl, along with the garlic, olive oil, mayonnaise, lemon juice, Worcestershire sauce and Parmesan. Season generously with pepper and whisk to combine."
+      },
+      {
+        "stepNum": 3,
+        "method": "Dress the salad: Add the radicchio leaves to the dressing and toss. The salad should be lightly dressed, not thickly caked. Taste for acidity, adjusting with more lemon juice if your radicchio is especially bitter. Transfer to a large plate, piling the leaves high. Top with a final grating of Parmesan and the bread crumbs, and garnish with the remaining anchovies. Serve immediately."
+      }
+    ],
+    "collaborators": null
+  },
+  {
+    "title": "Grilled Okra & Peach",
+    "image": null,
+    "ingredients": [
+      {
+        "measurement": "1 pound",
+        "ingredient": "okra"
+      },
+      {
+        "measurement": ".5 pound",
+        "ingredient": "peach"
+      },
+      {
+        "measurement": "2 tablespoons",
+        "ingredient": "sorghum vinegar"
+      },
+      {
+        "measurement": "2 tablespoons",
+        "ingredient": "peanut oil"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Heat a large cast-iron pan over medium high heat with a light coating of oil. Clean and slice okra in half down the length then dry well. Grill okra in batches in thr cast-iron so it starts to get a deep brown in spots."
+      },
+      {
+        "stepNum": 2,
+        "method": "Slice the peaches into quarters. Lightly oil the cast iron again, then add the peaches. Let them lightly brown. Transfer to a cutting board to let cool."
+      },
+      {
+        "stepNum": 3,
+        "method": "Whisk together sorghum vinegar and peanut oil, seasoning with salt to taste. Slice the peaches into 1/8-inch slices and add to the vinaigrette."
+      },
+      {
+        "stepNum": 4,
+        "method": "Add the okra and season with more salt if needed. Serve immediately."
+      }
+    ],
+    "collaborators": null
+  },
+  {
+    "title": "Rosewater Marshmallows",
+    "image": null,
+    "ingredients": [
+      {
+        "ingredient": "caster sugar",
+        "measurement": "1.5 cups"
+      },
+      {
+        "ingredient": "gelatine",
+        "measurement": "2 tablespoons"
+      },
+      {
+        "ingredient": "rosewater essence",
+        "measurement": "1 teaspoon"
+      },
+      {
+        "ingredient": "organic desiccated coconut",
+        "measurement": "2 cups"
+      }
+    ],
+    "methods": [
+      {
+        "stepNum": 1,
+        "method": "Line a 15 x 30cm rectangular pan with wax paper. Combine sugar and ⅔ cup hot water in a saucepan over medium heat"
+      },
+      {
+        "stepNum": 2,
+        "method": "Cook, stirring, for 3 minutes or until sugar dissolves and syrup is clear. Using a fork, combine gelatine and ⅔ cup cold water in a small jug then add to the hot syrup."
+      },
+      {
+        "stepNum": 3,
+        "method": "Cook, stirring, for 2 to 3 minutes or until gelatine has dissolved and mixture is clear. Pour into the bowl of an electric mixer. Set aside to cool to room temperature (about 30 to 40 minutes)."
+      }
+    ],
+    "collaborators": null
+  }
+]
