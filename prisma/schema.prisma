@@ -47,7 +47,7 @@ model Recipes {
   updatedAt         DateTime            @updatedAt
   recipeIngredients RecipeIngredients[]
   methods           Methods[]
-  Collaborators     Collaborators[]
+  collaborators     Collaborators[]
 }
 
 model Users {
@@ -59,7 +59,7 @@ model Users {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   recipes       Recipes[]
-  Collaborators Collaborators[]
+  collaborators Collaborators[]
 }
 
 model Collaborators {

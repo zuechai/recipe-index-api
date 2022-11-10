@@ -96,135 +96,104 @@ const getSelectedRecipe = async (req, res) => {
 
     res.json(recipe);
   } catch (e) {
-    console.log(e);
-    res.status(500).send();
+    res.status(500).send({ message: e });
   }
 };
 
 const createRecipe = async (req, res) => {
-  // try {
-  const recipe = {
-    title: "Tortillas",
-    image: null,
-    ingredients: [
-      {
-        ingredient: "onion",
-        measurement: "2 tablespoon",
-      },
-      {
-        ingredient: "garlic",
-        measurement: "1 clove",
-      },
-      {
-        ingredient: "jalapeno",
-        measurement: "1 seeded",
-      },
-      {
-        ingredient: "cilantro",
-        measurement: ".25 cup",
-      },
-      {
-        ingredient: "avocados",
-        measurement: "2",
-      },
-      {
-        ingredient: "lime",
-        measurement: "2 tablespoons",
-      },
-      {
-        ingredient: "salt",
-        measurement: "1 teaspoon",
-      },
-    ],
-    methods: [
-      {
-        stepNum: 1,
-        method: "Tortillas Earthnut pea potato.",
-      },
-      {
-        stepNum: 2,
-        method: "Griddle Quandong swiss chard.",
-      },
-      {
-        stepNum: 3,
-        method:
-          "Wrap to steam with residual heat. Salsify taro catsear garlic gram celery.",
-      },
-    ],
-    collaborators: [{ userId: "8c6ae494-fd87-448d-b688-999784613c80" }],
-  };
+  try {
+    const { userId, title, image, ingredients, methods, collaborators } =
+      req.body;
 
-  const user = await prisma.users.findUnique({
-    where: {
-      username: "zuechai",
-    },
-  });
+    const user = await prisma.users.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
 
-  const recipeId = uuidv4();
+    if (!user) {
+      res
+        .status(404)
+        .send(
+          "User not found when creating recipe. Check database for user data."
+        );
+    }
 
-  const { ingredients, methods } = recipe;
-
-  ingredients.forEach(({ measurement, ingredient }) => {
-    const create = async () => {
-      const found = await prisma.ingredients.findUnique({
-        where: { ingredient: ingredient },
-        select: {
-          ingredientId: true,
-        },
-      });
-
-      if (!found) {
-        await prisma.ingredients.create({
-          data: { ingredient: ingredient },
+    ingredients.forEach(({ measurement, ingredient }) => {
+      const create = async () => {
+        let ing;
+        ing = await prisma.ingredients.findUnique({
+          where: { ingredient: ingredient },
+          select: {
+            ingredientId: true,
+          },
         });
-      }
+        console.log(ing, ingredient, 1);
 
-      await prisma.recipeIngredients.create({
-        data: {
-          measurement: measurement,
-          ingredientId: found.ingredientId,
-          recipeId: recipeId,
-        },
-      });
-    };
+        if (!ing) {
+          console.log(ing, ingredient, 2);
 
-    create();
-  });
+          ing = await prisma.ingredients.create({
+            data: { ingredient: ingredient },
+          });
+        }
+        console.log(ing, ingredient, 3);
 
-  const createdRec = await prisma.recipes.create({
-    data: {
-      recipeId,
-      title: recipe.title,
-      // add string literal here for env
-      image: "http://localhost:5050/static/images/dashi-16-9.jpg",
-      users: {
-        connect: { userId: user.userId },
-      },
-      methods: {
-        create: methods,
-      },
-    },
-    include: {
-      recipeIngredients: {
-        select: {
-          id: true,
-          measurement: true,
-          ingredientId: true,
+        await prisma.recipeIngredients.create({
+          data: {
+            measurement: measurement,
+            ingredientId: ing.ingredientId,
+            recipeId: recipeId,
+          },
+        });
+      };
+
+      create();
+    });
+
+    const recipeId = uuidv4();
+
+    let imagePath;
+    if (!image) {
+      imagePath = `{baseUrl}/static/images/${image}`;
+    } else {
+      imagePath = null;
+    }
+
+    const createdRec = await prisma.recipes.create({
+      data: {
+        recipeId,
+        title,
+        // add string literal here for env
+        image: imagePath,
+        users: {
+          connect: { userId },
+        },
+        methods: {
+          create: methods,
         },
       },
-      methods: {
-        select: {
-          id: true,
-          stepNum: true,
-          method: true,
+      include: {
+        recipeIngredients: {
+          select: {
+            id: true,
+            measurement: true,
+            ingredientId: true,
+          },
+        },
+        methods: {
+          select: {
+            id: true,
+            stepNum: true,
+            method: true,
+          },
         },
       },
-    },
-  });
-  res.json(createdRec);
-  // } catch (e) {
-  //   res.status(500).send("Caught at the end of createRecipe()");
-  // }
+    });
+    res.json(createdRec);
+  } catch (e) {
+    res.status(500).send("Caught at the end of createRecipe()");
+  }
 };
 
 module.exports = {
