@@ -7,22 +7,6 @@ const { v4: uuidv4 } = require("uuid");
 
 // ---------------------
 
-const anthony = {
-  userId: uuidv4(),
-  firstName: "Anthony",
-  lasName: "Zuech",
-  username: "zuechai",
-  email: "recipe@index.com",
-};
-
-const calvin = {
-  userId: uuidv4(),
-  firstName: "Calvin",
-  lasName: "Zoofield",
-  username: "calvin",
-  email: "calvin@index.com",
-};
-
 // create users
 async function createUsers() {
   try {

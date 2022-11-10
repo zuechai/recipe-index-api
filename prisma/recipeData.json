@@ -472,42 +472,5 @@
       }
     ],
     "collaborators": null
-  },
-  {
-    "title": "Rosewater Marshmallows",
-    "image": null,
-    "ingredients": [
-      {
-        "ingredient": "caster sugar",
-        "measurement": "1.5 cups"
-      },
-      {
-        "ingredient": "gelatine",
-        "measurement": "2 tablespoons"
-      },
-      {
-        "ingredient": "rosewater essence",
-        "measurement": "1 teaspoon"
-      },
-      {
-        "ingredient": "organic desiccated coconut",
-        "measurement": "2 cups"
-      }
-    ],
-    "methods": [
-      {
-        "stepNum": 1,
-        "method": "Line a 15 x 30cm rectangular pan with wax paper. Combine sugar and ⅔ cup hot water in a saucepan over medium heat"
-      },
-      {
-        "stepNum": 2,
-        "method": "Cook, stirring, for 3 minutes or until sugar dissolves and syrup is clear. Using a fork, combine gelatine and ⅔ cup cold water in a small jug then add to the hot syrup."
-      },
-      {
-        "stepNum": 3,
-        "method": "Cook, stirring, for 2 to 3 minutes or until gelatine has dissolved and mixture is clear. Pour into the bowl of an electric mixer. Set aside to cool to room temperature (about 30 to 40 minutes)."
-      }
-    ],
-    "collaborators": null
   }
 ]

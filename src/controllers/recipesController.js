@@ -128,16 +128,12 @@ const createRecipe = async (req, res) => {
             ingredientId: true,
           },
         });
-        console.log(ing, ingredient, 1);
 
         if (!ing) {
-          console.log(ing, ingredient, 2);
-
           ing = await prisma.ingredients.create({
             data: { ingredient: ingredient },
           });
         }
-        console.log(ing, ingredient, 3);
 
         await prisma.recipeIngredients.create({
           data: {
