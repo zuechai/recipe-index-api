@@ -1,7 +1,7 @@
 [
   {
     "title": "Guacamole",
-    "image": null,
+    "image": "guac.jpg",
     "ingredients": [
       {
         "measurement": "3 tablespoons",
@@ -51,7 +51,7 @@
 
   {
     "title": "Carne Adobada",
-    "image": null,
+    "image": "carne.jpg",
     "ingredients": [
       {
         "measurement": "2",
@@ -133,7 +133,7 @@
 
   {
     "title": "Tortillas",
-    "image": null,
+    "image": "tortillas.jpg",
     "ingredients": [
       {
         "measurement": "1 pound",
@@ -150,15 +150,15 @@
         "method": "Heat a cast-iron pan or griddle over medium-high heat. Coat with a thin layer of oil, using a paper towel to distribute it evenly."
       },
       {
-        "stepNum": 1,
+        "stepNum": 2,
         "method": "Portion masa into 12 pieces. Press with a tortilla press lined with parchment or plastic."
       },
       {
-        "stepNum": 1,
+        "stepNum": 3,
         "method": "Gently peel the pressed masa and lay it on the griddle. Cook for 15 seconds or just until it peels from the pan, then flip it. Cook for another 30 seonds. Flip it once more and let it cook until it puffs up. Once puffed, flip one last time and cook for another 15 to 20 seconds."
       },
       {
-        "stepNum": 1,
+        "stepNum": 4,
         "method": "Loosely wrap in a cotton linen while you continue cooking the remaining tortillas. As you cook the tortillas, stack them on top of one another in the linen and let them steam as you continue cooking. Once all the tortillas are cooked, serve immediately with prepared fillings."
       }
     ],
@@ -167,7 +167,7 @@
 
   {
     "title": "Roasted Squash With Spiced Onion Gravy",
-    "image": null,
+    "image": "squash.jpg",
     "ingredients": [
       {
         "measurement": "3 pounds",
@@ -249,7 +249,7 @@
 
   {
     "title": "Mock Frites",
-    "image": null,
+    "image": "frites.jpg",
     "ingredients": [
       {
         "measurement": "1 pound",
@@ -279,7 +279,7 @@
 
   {
     "title": "Sorghum & Spelt Bagels",
-    "image": null,
+    "image": "bagels.jpg",
     "ingredients": [
       {
         "measurement": "530 mililiters",
@@ -377,7 +377,7 @@
 
   {
     "title": "Radicchio Caesar Salad",
-    "image": null,
+    "image": "rad.jpg",
     "ingredients": [
       {
         "measurement": "2 ounces",
@@ -434,7 +434,7 @@
   },
   {
     "title": "Grilled Okra & Peach",
-    "image": null,
+    "image": "okra.jpg",
     "ingredients": [
       {
         "measurement": "1 pound",

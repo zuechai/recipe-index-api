@@ -51,90 +51,83 @@ main(calvin);
 //--------------
 
 async function createRecipes(recipes) {
-  try {
-    const { title, image, ingredients, methods } = recipes;
+  // try {
+  const { title, image, ingredients, methods } = recipes;
 
-    const userId = "c45d495f-cd2d-4ebe-b90a-d5e650d241fc";
+  const userId = "c45d495f-cd2d-4ebe-b90a-d5e650d241fc";
+  const recipeId = uuidv4();
 
-    const user = await prisma.users.findUnique({
-      where: {
-        userId,
-      },
-    });
+  const user = await prisma.users.findUnique({
+    where: {
+      userId,
+    },
+  });
 
-    if (!user) {
-      console.log("Check seed file and correct userId");
-    }
-
-    ingredients.forEach(({ measurement, ingredient }, i) => {
-      let current = i;
-
-      const create = async () => {
-        let ing = null;
-        ing = await prisma.ingredients.upsert({
-          where: { ingredient },
-          update: {},
-          create: {
-            ingredient,
-          },
-        });
-        console.log(ing);
-
-        await prisma.recipeIngredients.create({
-          data: {
-            measurement: measurement,
-            ingredientId: ing.ingredientId,
-            recipeId: recipeId,
-          },
-        });
-        current = -1;
-      };
-
-      create();
-    });
-
-    const recipeId = uuidv4();
-
-    let imagePath;
-    if (image) {
-      imagePath = `{baseUrl}/static/images/${image}`;
-    } else {
-      imagePath = null;
-    }
-
-    const createdRec = await prisma.recipes.create({
-      data: {
-        recipeId,
-        title,
-        // add string literal here for env
-        image: imagePath,
-        users: {
-          connect: { userId },
-        },
-        methods: {
-          create: methods,
-        },
-      },
-      include: {
-        recipeIngredients: {
-          select: {
-            id: true,
-            measurement: true,
-            ingredientId: true,
-          },
-        },
-        methods: {
-          select: {
-            id: true,
-            stepNum: true,
-            method: true,
-          },
-        },
-      },
-    });
-  } catch (e) {
-    console.log(e);
+  if (!user) {
+    console.log("Check seed file and correct userId");
   }
+
+  ingredients.forEach(({ measurement, ingredient }, i) => {
+    const create = async () => {
+      let ing = null;
+      ing = await prisma.ingredients.create({
+        data: { ingredient },
+      });
+
+      console.log(recipeId);
+      await prisma.recipeIngredients.create({
+        data: {
+          measurement: measurement,
+          ingredientId: ing.ingredientId,
+          recipeId: recipeId,
+        },
+      });
+    };
+
+    create();
+  });
+
+  let imagePath;
+  if (image) {
+    imagePath = `http://localhost:5050/static/images/${image}`;
+  } else {
+    imagePath = null;
+  }
+
+  const createdRec = await prisma.recipes.create({
+    data: {
+      recipeId,
+      title,
+      image: imagePath,
+      users: {
+        connect: { userId },
+      },
+      methods: {
+        create: methods,
+      },
+    },
+    include: {
+      recipeIngredients: {
+        select: {
+          id: true,
+          measurement: true,
+          ingredientId: true,
+        },
+      },
+      methods: {
+        select: {
+          id: true,
+          stepNum: true,
+          method: true,
+        },
+      },
+    },
+  });
+  // } catch (e) {
+  //   console.log(e);
+  // }
 }
 
-recipes.forEach((recipe) => createRecipes(recipe));
+recipes.forEach((recipe, i) => {
+  const r = createRecipes(recipe);
+});

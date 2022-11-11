@@ -43,61 +43,64 @@ const getRecipesBySearch = async (req, res) => {
 
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
-  try {
-    const r = await prisma.recipes.findUnique({
-      where: { recipeId: req.params.id },
-      include: {
-        recipeIngredients: {
-          select: {
-            measurement: true,
-            ingredientId: true,
-            ingredients: {
-              select: {
-                ingredient: true,
-              },
+  // try {
+  const r = await prisma.recipes.findUnique({
+    where: { recipeId: req.params.id },
+    include: {
+      recipeIngredients: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          measurement: true,
+          ingredientId: true,
+          ingredients: {
+            select: {
+              ingredient: true,
             },
           },
         },
-        methods: {
-          select: {
-            id: true,
-            stepNum: true,
-            method: true,
-          },
+      },
+      methods: {
+        select: {
+          id: true,
+          stepNum: true,
+          method: true,
         },
       },
-    });
+    },
+  });
 
-    const { recipeId, title, image, createdAt, updatedAt } = r;
-    const { methods: methods, recipeIngredients: ings } = r;
+  const { recipeId, title, image, createdAt, updatedAt } = r;
+  const { methods: methods, recipeIngredients: ings } = r;
 
-    console.log(ings);
+  console.log(ings);
 
-    const ingredients = ings.map(
-      ({ measurement, ingredientId, ingredients: i }) => {
-        const { ingredient } = i;
-        return {
-          ingredientId,
-          measurement,
-          ingredient,
-        };
-      }
-    );
+  const ingredients = ings.map(
+    ({ measurement, ingredientId, ingredients: i }) => {
+      const { ingredient } = i;
+      return {
+        ingredientId,
+        measurement,
+        ingredient,
+      };
+    }
+  );
 
-    const recipe = {
-      recipeId,
-      title,
-      image,
-      createdAt,
-      updatedAt,
-      ingredients,
-      methods,
-    };
+  const recipe = {
+    recipeId,
+    title,
+    image,
+    createdAt,
+    updatedAt,
+    ingredients,
+    methods,
+  };
 
-    res.json(recipe);
-  } catch (e) {
-    res.status(500).send({ message: e });
-  }
+  res.json(recipe);
+  // } catch (e) {
+  //   res.status(500).send({ message: e });
+  // }
 };
 
 const createRecipe = async (req, res) => {
@@ -128,6 +131,7 @@ const createRecipe = async (req, res) => {
             ingredientId: true,
           },
         });
+        const recipeId = uuidv4();
 
         if (!ing) {
           ing = await prisma.ingredients.create({
@@ -147,8 +151,6 @@ const createRecipe = async (req, res) => {
       create();
     });
 
-    const recipeId = uuidv4();
-
     let imagePath;
     if (!image) {
       imagePath = `{baseUrl}/static/images/${image}`;
@@ -160,7 +162,6 @@ const createRecipe = async (req, res) => {
       data: {
         recipeId,
         title,
-        // add string literal here for env
         image: imagePath,
         users: {
           connect: { userId },

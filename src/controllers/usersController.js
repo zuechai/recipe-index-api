@@ -28,6 +28,7 @@ const createUser = async (req, res) => {
 
 const findUsers = async (req, res) => {
   const query = req.query.u;
+  console.log(query);
   try {
     const foundUser = await prisma.users.findMany({
       select: {
@@ -36,21 +37,24 @@ const findUsers = async (req, res) => {
         email: true,
       },
       where: {
-        OR: {
-          email: { contains: query },
-
-          username: { contains: query },
-        },
+        OR: [
+          {
+            email: { contains: query },
+          },
+          {
+            username: { contains: query },
+          },
+        ],
       },
     });
 
-    if (!foundUser.length) {
+    if (foundUser.length === 0) {
       res.status(400).send("User does not exist");
+    } else {
+      res.json(foundUser);
     }
-
-    res.json(foundUser);
   } catch (e) {
-    res.status(500).send({ error: e });
+    res.status(500).send(e);
   }
 };
 
