@@ -70,9 +70,15 @@ async function createRecipes(recipes) {
   ingredients.forEach(({ measurement, ingredient }, i) => {
     const create = async () => {
       let ing = null;
-      ing = await prisma.ingredients.create({
-        data: { ingredient },
+      ing = await prisma.ingredients.findUnique({
+        where: { ingredient },
       });
+
+      if (!ing) {
+        ing = await prisma.ingredients.create({
+          data: { ingredient },
+        });
+      }
 
       console.log(recipeId);
       await prisma.recipeIngredients.create({
@@ -129,5 +135,8 @@ async function createRecipes(recipes) {
 }
 
 recipes.forEach((recipe, i) => {
-  const r = createRecipes(recipe);
+  const create = async () => {
+    const r = await createRecipes(recipe);
+  };
+  create();
 });
