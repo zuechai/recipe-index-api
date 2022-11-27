@@ -12,7 +12,9 @@ app.use("/static", express.static("public"));
 // routes
 const recipesRoute = require("./routes/recipesRoute");
 const usersRoute = require("./routes/usersRoute");
-
+app.get("/", (_req, res) => {
+  res.send("Welcome to Recipe Index API");
+});
 app.use("/recipes", recipesRoute);
 app.use("/users", usersRoute);
 
