@@ -1,22 +1,10 @@
-// generator client {
-//   provider = "prisma-client-js"
-// }
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
-
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
 }
-
 datasource db {
   provider = "mysql"
-  url = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  url      = env("DATABASE_URL")
 }
-
 
 model Ingredients {
   ingredientId      Int                 @id @unique(map: "ingredientId") @default(autoincrement())
