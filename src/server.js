@@ -10,7 +10,7 @@ app.use(cors());
 app.use("/static", express.static("public"));
 
 app.get("/", (_req, res) => {
-  res.send("Welcome to Recipe Index API");
+  res.json("Welcome to Recipe Index API");
 });
 
 // routes
@@ -21,7 +21,7 @@ app.use("/recipes", recipesRoute);
 app.use("/users", usersRoute);
 
 // run server
-const port = process.env.DB_PORT || 5050;
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, () => {
+  console.log(`Server listening on http://localhost:${PORT}`);
 });

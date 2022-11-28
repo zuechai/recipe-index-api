@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "format": "npx prisma format",
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
