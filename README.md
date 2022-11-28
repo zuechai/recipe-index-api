@@ -17,7 +17,6 @@ Recipe app for users to store and develop recipes. Created for professional reci
    - `DB_PORT=\<3306>`
    - `DATABASE_URL=mysql://DB_USER:DB_PASSWORD@localhost:DB_PORT/DB_NAME"`
 4. Run:
-   - `npm run generate`
    - `npm run migrate`
    - `npm run seed`
 5. Run `npm start` to start running the server.
