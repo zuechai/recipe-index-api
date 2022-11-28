@@ -21,7 +21,7 @@ app.use("/recipes", recipesRoute);
 app.use("/users", usersRoute);
 
 // run server
-const PORT = process.env.DB_PORT || 5050;
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+const port = process.env.DB_PORT || 5050;
+app.listen(port, () => {
+  console.log(`Server listening on http://localhost:${port}`);
 });
