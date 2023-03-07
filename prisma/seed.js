@@ -2,6 +2,8 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 
+const logger = require("../src/utils/logger/logger");
+
 const fs = require("fs");
 const filePath = "./prisma/recipeData.json";
 const file = fs.readFileSync(filePath);
@@ -17,15 +19,15 @@ async function main(newUser) {
             ...newUser,
           },
         });
-        console.log(created);
+        logger.info(created);
       } catch (e) {
-        console.log(e);
+        logger.error(e);
       }
     }
 
     createUsers(newUser);
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
 }
 
@@ -64,7 +66,7 @@ async function createRecipes(recipes) {
   });
 
   if (!user) {
-    console.log("Check seed file and correct userId");
+    logger.error("Check seed file and for correct userId");
   }
 
   ingredients.forEach(({ measurement, ingredient }, i) => {
@@ -79,7 +81,7 @@ async function createRecipes(recipes) {
         });
       }
 
-      console.log(recipeId);
+      logger.info(recipeId);
       await prisma.recipeIngredients.create({
         data: {
           measurement: measurement,
@@ -129,13 +131,14 @@ async function createRecipes(recipes) {
     },
   });
   // } catch (e) {
-  //   console.log(e);
+  //   logger.error(e);
   // }
 }
 
 recipes.forEach((recipe, i) => {
   const create = async () => {
     const r = await createRecipes(recipe);
+    logger.info(r);
   };
   create();
 });
