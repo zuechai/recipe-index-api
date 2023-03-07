@@ -1,12 +1,14 @@
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
 const express = require("express");
+const logger = require("../utils/logger/logger");
 const app = express();
 app.use("/static", express.static("public"));
 
 const getRecipesBySearch = async (req, res) => {
+  logger.info("GET getRecipesBySearch");
   const query = req.query.q;
-  console.log(query);
+  logger.trace(query);
 
   const results = await prisma.recipeIngredients.findMany({
     orderBy: {
@@ -43,6 +45,7 @@ const getRecipesBySearch = async (req, res) => {
 
 // gets a single recipe by id
 const getSelectedRecipe = async (req, res) => {
+  logger.info("GET getSingleRecipe");
   // try {
   const r = await prisma.recipes.findUnique({
     where: { recipeId: req.params.id },
@@ -74,7 +77,7 @@ const getSelectedRecipe = async (req, res) => {
   const { recipeId, title, image, createdAt, updatedAt } = r;
   const { methods: methods, recipeIngredients: ings } = r;
 
-  console.log(ings);
+  logger.trace(ings);
 
   const ingredients = ings.map(
     ({ measurement, ingredientId, ingredients: i }) => {
@@ -104,6 +107,7 @@ const getSelectedRecipe = async (req, res) => {
 };
 
 const createRecipe = async (req, res) => {
+  logger.info("PUT createRecipe");
   try {
     const { userId, title, image, ingredients, methods, collaborators } =
       req.body;

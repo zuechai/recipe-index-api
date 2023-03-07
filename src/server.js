@@ -2,6 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const logger = require("./utils/logger/logger");
 
 // initialize
 require("dotenv").config();
@@ -23,5 +24,5 @@ app.use("/users", usersRoute);
 // run server
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  logger.info(`Server listening on http://localhost:${PORT}`);
 });

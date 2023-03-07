@@ -1,5 +1,6 @@
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
+const logger = require("../../src/utils/logger/logger");
 
 // Follow instructions in README.md to connect your database with Prisma, then run the following command in the terminal:
 // node run initData.js
@@ -15,9 +16,9 @@ async function createUsers() {
         ...newUser,
       },
     });
-    console.log(created);
+    logger.info(created);
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
 }
 
@@ -112,9 +113,9 @@ async function createRecipes() {
         },
       },
     });
-    console.log(createdRec);
+    logger.info(createdRec);
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
   createRecipes();
 }

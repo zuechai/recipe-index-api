@@ -1,9 +1,10 @@
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
-const express = require("express");
+const logger = require("../utils/logger/logger");
 
 // create new user
 const createUser = async (req, res) => {
+  logger.info("PUT createUser");
   try {
     const newUser = req.body;
 
@@ -21,14 +22,15 @@ const createUser = async (req, res) => {
     }
     res.status(400).send({ message: "User already exist." });
   } catch (e) {
-    console.log(`Error =====>\n${e}`);
+    logger.error(e);
     res.status(500).send(e);
   }
 };
 
 const findUsers = async (req, res) => {
+  logger.info("GET findUsers");
   const query = req.query.u;
-  console.log(query);
+  logger.trace(query);
   try {
     const foundUser = await prisma.users.findMany({
       select: {
@@ -58,6 +60,6 @@ const findUsers = async (req, res) => {
   }
 };
 
-const findCollaborators = async () => {};
+// const findCollaborators = async () => {};
 
 module.exports = { createUser, findUsers };
