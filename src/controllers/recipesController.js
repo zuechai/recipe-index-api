@@ -5,6 +5,13 @@ const logger = require("../utils/logger/logger");
 const app = express();
 app.use("/static", express.static("public"));
 
+/**
+ * GET ALL RECIPES with an optional query
+ * @http GET
+ * @endpoint {baseUrl}/recipes || {baseUrl}/recipes?q={query}
+ * @param {*} req
+ * @param {*} res
+ */
 const getRecipesBySearch = async (req, res) => {
   logger.info("GET getRecipesBySearch");
   try {
@@ -51,7 +58,13 @@ const getRecipesBySearch = async (req, res) => {
   }
 };
 
-// gets a single recipe by id
+/**
+ * GET SELECTED RECIPE
+ * @http GET
+ * @endpoint {base}/recipes/{:id}
+ * @param {*} req
+ * @param {*} res
+ */
 const getSelectedRecipe = async (req, res) => {
   logger.info("GET getSingleRecipe");
   try {
@@ -115,6 +128,13 @@ const getSelectedRecipe = async (req, res) => {
   }
 };
 
+/**
+ * CREATES A NEW RECIPE
+ * @http PUT
+ * @endpoint {base}/recipes/add-recipe
+ * @param {*} req
+ * @param {*} res
+ */
 const createRecipe = async (req, res) => {
   logger.info("PUT createRecipe");
   try {
@@ -166,78 +186,6 @@ const createRecipe = async (req, res) => {
       },
     });
     res.json(finalCreatedRecipe);
-
-    // move to dbUtils/users.js
-    async function findUserWithId(id) {
-      return await prisma.users.findUnique({
-        where: {
-          userId: id,
-        },
-      });
-    }
-
-    // move to dbUtils/imageUtils.js
-    function setImagePath(image) {
-      if (image) {
-        return `{baseUrl}/static/images/${image}`;
-      }
-      return null;
-    }
-
-    // move to dbUtils/ingredients.js
-    async function findOrCreateIngredients(ingredients) {
-      const mappedIngredients = [];
-      for (let i = 0; i < ingredients.length; i++) {
-        const { ingredient, measurement } = ingredients[i];
-        const foundIngredient = await prisma.ingredients.findUnique({
-          where: { ingredient },
-          select: {
-            ingredientId: true,
-            ingredient: true,
-          },
-        });
-        if (foundIngredient) {
-          mappedIngredients.push({
-            measurement,
-            ingredient: {
-              ingredient: foundIngredient.ingredient,
-              ingredientId: foundIngredient.ingredientId,
-            },
-          });
-        } else {
-          const createdIngredient = await prisma.ingredients.create({
-            data: { ingredient },
-          });
-          mappedIngredients.push({
-            measurement,
-            ingredient: createdIngredient,
-          });
-        }
-      }
-      return mappedIngredients;
-    }
-
-    // move to dbUtils/recipeIngredients.js
-    async function createRecipeIngredients(recipeId, ingredients) {
-      const formattedData = ingredients.map(({ ingredient, measurement }) => {
-        return {
-          recipeId,
-          ingredientId: ingredient.ingredientId,
-          measurement,
-        };
-      });
-
-      try {
-        return await prisma.recipeIngredients.createMany({
-          data: formattedData,
-        });
-      } catch (e) {
-        logger.debug(e);
-        throw new Error(e);
-      }
-    }
-
-    //
   } catch (err) {
     logger.error(new Error(err));
     res
