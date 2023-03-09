@@ -6,7 +6,7 @@ CREATE TABLE `Ingredients` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `ingredientId`(`ingredientId`),
-    UNIQUE INDEX `ingredient`(`ingredient`),
+    UNIQUE INDEX `Ingredients_ingredient_key`(`ingredient`),
     PRIMARY KEY (`ingredientId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -33,7 +33,7 @@ CREATE TABLE `RecipeIngredients` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `id`(`id`),
-    PRIMARY KEY (`recipeId`, `ingredientId`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -65,14 +65,28 @@ CREATE TABLE `Users` (
     PRIMARY KEY (`userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- AddForeignKey
-ALTER TABLE `Methods` ADD CONSTRAINT `Methods_recipeId_fkey` FOREIGN KEY (`recipeId`) REFERENCES `Recipes`(`recipeId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateTable
+CREATE TABLE `Collaborators` (
+    `recipeId` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`recipeId`, `userId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `RecipeIngredients` ADD CONSTRAINT `RecipeIngredients_recipeId_fkey` FOREIGN KEY (`recipeId`) REFERENCES `Recipes`(`recipeId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Methods` ADD CONSTRAINT `Methods_recipeId_fkey` FOREIGN KEY (`recipeId`) REFERENCES `Recipes`(`recipeId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `RecipeIngredients` ADD CONSTRAINT `RecipeIngredients_recipeId_fkey` FOREIGN KEY (`recipeId`) REFERENCES `Recipes`(`recipeId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `RecipeIngredients` ADD CONSTRAINT `RecipeIngredients_ingredientId_fkey` FOREIGN KEY (`ingredientId`) REFERENCES `Ingredients`(`ingredientId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Recipes` ADD CONSTRAINT `Recipes_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Recipes` ADD CONSTRAINT `Recipes_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Collaborators` ADD CONSTRAINT `Collaborators_recipeId_fkey` FOREIGN KEY (`recipeId`) REFERENCES `Recipes`(`recipeId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Collaborators` ADD CONSTRAINT `Collaborators_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE CASCADE ON UPDATE CASCADE;

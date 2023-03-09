@@ -15,6 +15,7 @@ const logger = require("../src/utils/logger/logger");
 
 // read recipes from json file
 const fs = require("fs");
+const { ingredients } = require("../src/prisma");
 const filePath = "./prisma/recipeData.json";
 const file = fs.readFileSync(filePath);
 const recipes = JSON.parse(file);
@@ -28,7 +29,7 @@ const anthony = {
   firstName: "Anthony",
   lastName: "Zuech",
   username: "zuechai",
-  email: "recipe@index.com",
+  email: "zuechai@gmail.com",
 };
 
 const calvin = {
@@ -41,17 +42,21 @@ const calvin = {
 
 const users = [anthony, calvin];
 
-// Insert users into the database
-for (let i = 0; i < users.length; i++) {
-  await createUser(users[i]);
-}
-
-// Insert recipes into the database
-for (let i = 0; i < recipes.length; i++) {
-  await createRecipe(recipes);
-}
+main(users, recipes);
 
 //--------------
+
+async function main(users, recipes) {
+  // Insert users into the database
+  for (let i = 0; i < users.length; i++) {
+    await createUser(users[i]);
+  }
+
+  // Insert recipes into the database
+  for (let i = 0; i < recipes.length; i++) {
+    await createRecipe(recipes[i]);
+  }
+}
 
 /**
  * INSERTS THE USER INTO THE DATABASE
@@ -64,7 +69,7 @@ async function createUser(newUser) {
     });
     logger.info(created);
   } catch (err) {
-    logger.error(err);
+    logger.error("Error in createUser()");
   }
 }
 
@@ -72,24 +77,22 @@ async function createUser(newUser) {
  * INSERTS THE RECIPE INTO THE DATABASE
  * @param {*} recipes
  */
-async function createRecipe(recipes) {
+async function createRecipe(recipe) {
   try {
-    const { title, image, ingredients, methods } = recipes;
+    const { title, image, ingredients, methods } = recipe;
 
     const foundUser = await findUserWithId(anthony.userId);
     if (!foundUser) {
-      logger.Error(new Error("User not found"));
+      logger.error("User not found");
       throw new Error("User not found");
     }
 
     const recipeId = uuidv4();
+
     const recipeIngredients = await findOrCreateIngredients(ingredients);
-    // check recipeIngredients and ingredients are the same length
     if (ingredients.length !== recipeIngredients.length) {
       logger.error(
-        new Error(
-          "Arrays of ingredients requested and found/created do not match"
-        )
+        "Arrays of ingredients requested and found/created do not match"
       );
       throw new Error(
         "Arrays of ingredients requested and found/created do not match"
@@ -123,6 +126,6 @@ async function createRecipe(recipes) {
     });
     logger.info(finalCreatedRecipe);
   } catch (err) {
-    logger.error(new Error(err));
+    logger.error(`Error in createRecipe() ${err}`);
   }
 }
