@@ -109,5 +109,23 @@ const findUsers = async (req, res) => {
 // Update a User
 
 // Delete a User
+const deleteUser = async (req, res) => {
+  logger.info("DELETE /users/delete/:id");
+  try {
+    if (!req.params.id) {
+      res.status(400).send({ message: "No ID provided" });
+    }
+    const userId = req.params.id;
+    const deletedUser = await prisma.users.delete({
+      where: userId,
+    });
+    if (!deletedUser) {
+      res.status(404).send({ message: "Record does not exist" });
+    }
+    res.status(200).send(deleteUser);
+  } catch (err) {
+    res.status(500).send({ message: "Caught in deleteUser()", error: err });
+  }
+};
 
 module.exports = { createUser, findUser, findUsers };
