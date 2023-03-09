@@ -133,10 +133,8 @@ const createRecipe = async (req, res) => {
     }
 
     const recipeId = uuidv4();
-
-    // arg is an array of ingredients from the body include a block comment describing the expected format (great example of why typescript is a great choice for future projects)
     const recipeIngredients = await findOrCreateIngredients(ingredients);
-
+    // check ingredients and methods have data
     res.json(recipeIngredients);
 
     // move to dbUtils/users.js
@@ -150,7 +148,9 @@ const createRecipe = async (req, res) => {
 
     // move to dbUtils/ingredients.js
     async function findOrCreateIngredients(ingredients) {
-      for (let i = 0; i < ingredients.length; i) {
+      const mappedIngredients = [];
+      for (let i = 0; i < ingredients.length; i++) {
+        const { ingredient, measurement } = ingredients[i];
         const foundIngredient = await prisma.ingredients.findUnique({
           where: { ingredient },
           select: {
@@ -158,19 +158,20 @@ const createRecipe = async (req, res) => {
             ingredient: true,
           },
         });
-
         if (foundIngredient) {
-          logger.trace(Object.keys(foundIngredient));
-          return { measurement, ingredient: foundIngredient };
+          mappedIngredients.push({ measurement, ingredient: foundIngredient });
+        } else {
+          const createdIngredient = await prisma.ingredients.create({
+            data: { ingredient },
+          });
+          mappedIngredients.push({
+            measurement,
+            ingredient: createdIngredient,
+          });
         }
-
-        const createdIngredient = await prisma.ingredients.create({
-          data: { ingredient },
-        });
-
-        logger.trace(Object.keys(createdIngredient));
-        return { measurement, ingredient: createdIngredient };
+        logger.trace(mappedIngredients);
       }
+      return mappedIngredients;
     }
 
     // move to dbUtils/recipeIngredients.js
