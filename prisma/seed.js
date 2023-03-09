@@ -107,7 +107,7 @@ async function createRecipe(recipe) {
         title,
         image: imagePath,
         users: {
-          connect: { userId },
+          connect: { userId: foundUser.userId },
         },
         methods: {
           create: methods,
