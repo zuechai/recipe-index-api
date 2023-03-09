@@ -1,6 +1,6 @@
 const winston = require("winston");
 
-const { printf, errors, timestamp, combine } = winston.format;
+const { printf, errors, timestamp, combine, prettyPrint } = winston.format;
 
 const logLevels = {
   fatal: 0,
@@ -23,7 +23,12 @@ const serverLogFormat = printf(({ level, message, timestamp, stack }) => {
 const logger = winston.createLogger({
   levels: logLevels,
   level: process.env.NODE_ENV === "production" ? "info" : "trace",
-  format: combine(timestamp(), errors({ stack: true }), serverLogFormat),
+  format: combine(
+    timestamp(),
+    errors({ stack: true }),
+    // serverLogFormat
+    prettyPrint()
+  ),
   transports: [new winston.transports.Console()],
 });
 
