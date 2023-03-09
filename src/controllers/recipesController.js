@@ -18,13 +18,13 @@ const {
  * GET ALL RECIPES with an optional query
  * @http GET
  * @endpoint {baseUrl}/recipes || {baseUrl}/recipes?q={query}
- * @param {*} req
- * @param {*} res
+ * @param req.query.contains {baseUrl}/recipes?contains=<string>'
+ * @param res
  */
 const getRecipesBySearch = async (req, res) => {
   logger.info("GET getRecipesBySearch");
   try {
-    const query = req.query.q;
+    const query = req.query.contains;
     logger.trace(query);
 
     const results = await prisma.recipeIngredients.findMany({

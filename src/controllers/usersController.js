@@ -2,7 +2,13 @@ const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
 const logger = require("../utils/logger/logger");
 
-// create new user
+/**
+ * CREATE A NEW USER
+ * @http PUT
+ * @endpoint {baseUrl}/users
+ * @param {*} req.body
+ * @param {*} res
+ */
 const createUser = async (req, res) => {
   logger.info("PUT createUser");
   try {
@@ -27,11 +33,51 @@ const createUser = async (req, res) => {
   }
 };
 
+/**
+ * FIND A SINGLE USER
+ * @http GET
+ * @endpoint {baseUrl}/users?byId=<userId>
+ * @param {*} req.query.byId
+ * @param {*} res
+ */
+const findUser = async (req, res) => {
+  logger.info("GET /users?byId=<userId>");
+  try {
+    if (!Object.keys(req.query).includes("byId")) {
+      res.status(400).send({ message: "No query provided" });
+    }
+    const query = res.query.byId;
+    const foundUser = await prisma.users.findUnique({
+      where: { userId: query },
+      select: {
+        userId: true,
+        username: true,
+        email: true,
+      },
+    });
+    if (!foundUser) {
+      res.status(404).send("Does not exist");
+    }
+    res.json(foundUser);
+  } catch (err) {
+    res.status(500).send({ message: "Caught in findUsers()", error: err });
+  }
+};
+
+/**
+ * FIND MULTIPLE USERS
+ * @http GET
+ * @endpoint  {baseUrl}/users?byIds
+ * @param {*} req.query.byIds
+ * @param {*} res
+ */
 const findUsers = async (req, res) => {
   logger.info("GET findUsers");
-  const query = req.query.u;
-  logger.trace(query);
   try {
+    if (!Object.keys(req.query).includes("byIds")) {
+      res.status(400).send({ message: "No query provided" });
+    }
+    const query = req.query.byIds;
     const foundUser = await prisma.users.findMany({
       select: {
         userId: true,
@@ -51,15 +97,17 @@ const findUsers = async (req, res) => {
     });
 
     if (foundUser.length === 0) {
-      res.status(400).send("User does not exist");
+      res.status(404).send("User does not exist");
     } else {
       res.json(foundUser);
     }
-  } catch (e) {
-    res.status(500).send(e);
+  } catch (err) {
+    res.status(500).send({ message: "Caught in findUsers()", error: err });
   }
 };
 
-// const findCollaborators = async () => {};
+// Update a User
 
-module.exports = { createUser, findUsers };
+// Delete a User
+
+module.exports = { createUser, findUser, findUsers };
