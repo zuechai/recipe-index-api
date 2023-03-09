@@ -26,8 +26,8 @@ const logger = winston.createLogger({
   format: combine(
     timestamp(),
     errors({ stack: true }),
-    serverLogFormat
-    // prettyPrint()
+    // serverLogFormat
+    prettyPrint()
   ),
   transports: [new winston.transports.Console()],
 });

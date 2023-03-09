@@ -85,8 +85,6 @@ const getSelectedRecipe = async (req, res) => {
     const { recipeId, title, image, createdAt, updatedAt } = r;
     const { methods: methods, recipeIngredients: ings } = r;
 
-    logger.trace(ings);
-
     const ingredients = ings.map(
       ({ measurement, ingredientId, ingredients: i }) => {
         const { ingredient } = i;
@@ -134,8 +132,40 @@ const createRecipe = async (req, res) => {
 
     const recipeId = uuidv4();
     const recipeIngredients = await findOrCreateIngredients(ingredients);
-    // check ingredients and methods have data
-    res.json(recipeIngredients);
+    // check recipeIngredients and ingredients are the same length
+    if (ingredients.length !== recipeIngredients.length) {
+      res.status(400).send({
+        message:
+          "Arrays of ingredients requested and found/created do not match",
+      });
+    }
+
+    const imagePath = setImagePath(image);
+
+    const createdRecipe = await prisma.recipes.create({
+      data: {
+        recipeId,
+        title,
+        image: imagePath,
+        users: {
+          connect: { userId },
+        },
+        methods: {
+          create: methods,
+        },
+      },
+    });
+
+    // needs to happen after the recipe object is added or as part of its creation using a nested createdMany
+    await createRecipeIngredients(createdRecipe.recipeId, recipeIngredients);
+    const finalCreatedRecipe = await prisma.recipes.findUnique({
+      where: { recipeId: createdRecipe.recipeId },
+      include: {
+        recipeIngredients: true,
+        methods: true,
+      },
+    });
+    res.json(finalCreatedRecipe);
 
     // move to dbUtils/users.js
     async function findUserWithId(id) {
@@ -144,6 +174,14 @@ const createRecipe = async (req, res) => {
           userId: id,
         },
       });
+    }
+
+    // move to dbUtils/imageUtils.js
+    function setImagePath(image) {
+      if (image) {
+        return `{baseUrl}/static/images/${image}`;
+      }
+      return null;
     }
 
     // move to dbUtils/ingredients.js
@@ -159,7 +197,13 @@ const createRecipe = async (req, res) => {
           },
         });
         if (foundIngredient) {
-          mappedIngredients.push({ measurement, ingredient: foundIngredient });
+          mappedIngredients.push({
+            measurement,
+            ingredient: {
+              ingredient: foundIngredient.ingredient,
+              ingredientId: foundIngredient.ingredientId,
+            },
+          });
         } else {
           const createdIngredient = await prisma.ingredients.create({
             data: { ingredient },
@@ -169,20 +213,33 @@ const createRecipe = async (req, res) => {
             ingredient: createdIngredient,
           });
         }
-        logger.trace(mappedIngredients);
       }
       return mappedIngredients;
     }
 
     // move to dbUtils/recipeIngredients.js
-    async function createRecipeIngredients(
-      recipeId,
-      ingredientId,
-      measurement
-    ) {}
+    async function createRecipeIngredients(recipeId, ingredients) {
+      const formattedData = ingredients.map(({ ingredient, measurement }) => {
+        return {
+          recipeId,
+          ingredientId: ingredient.ingredientId,
+          measurement,
+        };
+      });
+
+      try {
+        return await prisma.recipeIngredients.createMany({
+          data: formattedData,
+        });
+      } catch (e) {
+        logger.debug(e);
+        throw new Error(e);
+      }
+    }
 
     //
   } catch (err) {
+    logger.error(new Error(err));
     res
       .status(500)
       .send({ message: "Caught at the end of createRecipe()", error: err });
