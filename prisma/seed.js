@@ -2,6 +2,15 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 
+const { findUserWithId } = require("../src/utils/dbUtils/usersUtils");
+const {
+  createRecipeIngredients,
+} = require("../src/utils/dbUtils/recipeIngredientsUtils");
+const {
+  findOrCreateIngredients,
+} = require("../src/utils/dbUtils/ingredientsUtils");
+const { setImagePath } = require("../src/utils/dbUtils/imagesUtils");
+
 const logger = require("../src/utils/logger/logger");
 
 // read recipes from json file
