@@ -6,6 +6,6 @@ app.use(express.json());
 
 const { findUsers } = require("../controllers/usersController");
 
-router.get("/search", findUsers);
+router.get("/", findUsers);
 
 module.exports = router;

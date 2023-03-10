@@ -47,7 +47,7 @@ const getUser = async (req, res) => {
       res.status(401).send({ message: "Missing data in request body" });
     }
     const foundUser = await prisma.users.findUnique({
-      where: { userId: query },
+      where: { userId },
       select: {
         userId: true,
         username: true,
@@ -59,7 +59,7 @@ const getUser = async (req, res) => {
     }
     res.json(foundUser);
   } catch (err) {
-    logger.error("Caught in getUser()");
+    logger.error(new Error(`Caught in getUser(), ${err}`));
     res.status(500).send({ message: "Caught in getUser()", error: err });
   }
 };
