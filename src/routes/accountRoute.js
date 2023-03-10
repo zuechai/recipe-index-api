@@ -7,7 +7,7 @@ app.use(express.json());
 const {
   createUser,
   getUser,
-  // updateUser,
+  updateUser,
   deleteUser,
 } = require("../controllers/accountController");
 
@@ -20,6 +20,7 @@ router.get("/", getUser);
 // logout
 
 // update => edit
+router.patch("/update", updateUser);
 
 // delete
 router.delete("/delete", deleteUser);
