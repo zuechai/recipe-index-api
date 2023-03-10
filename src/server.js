@@ -16,9 +16,11 @@ app.get("/", (_req, res) => {
 
 // routes
 const recipesRoute = require("./routes/recipesRoute");
+const accountRoute = require("./routes/accountRoute");
 const usersRoute = require("./routes/usersRoute");
 
 app.use("/recipes", recipesRoute);
+app.use("/account", accountRoute);
 app.use("/users", usersRoute);
 
 // run server
