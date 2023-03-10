@@ -19,16 +19,20 @@ const createUser = async (req, res) => {
     });
     if (foundUser) {
       res.status(400).send({ message: "User already exist." });
+      return;
     }
-
     newUser.userId = uuidv4();
     const created = await prisma.users.create({
       data: newUser,
     });
+    if (!created) {
+      res.status(500).send({ message: "Could not create user" });
+      return;
+    }
     res.json(created);
-  } catch (e) {
+  } catch (err) {
     logger.error("Caught in createUser");
-    res.status(500).send(e);
+    res.status(500).send({ message: "Error creating user", error: err });
   }
 };
 
@@ -45,6 +49,7 @@ const getUser = async (req, res) => {
     const { userId } = req.body;
     if (!userId) {
       res.status(401).send({ message: "Missing data in request body" });
+      return;
     }
     const foundUser = await prisma.users.findUnique({
       where: { userId },
@@ -56,6 +61,7 @@ const getUser = async (req, res) => {
     });
     if (!foundUser) {
       res.status(404).send("Does not exist");
+      return;
     }
     res.json(foundUser);
   } catch (err) {
@@ -68,7 +74,21 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   logger.info("PATCH /account/update");
   try {
-    // most likely want to use prisma.users.upsert
+    if (!Object.keys(req.body).length) {
+      res.status(400).send({ message: "No request body provided" });
+      return;
+    }
+    const { userId, ...data } = req.body;
+    const updatedUser = await prisma.users.update({
+      where: { userId },
+      data: data,
+    });
+
+    if (!updatedUser) {
+      res.status(400).send({ message: "Error updating user" });
+      return;
+    }
+
     res.json({ message: "Endpoint under construction" });
   } catch (err) {
     logger.error("Caught in updateUser()");
@@ -93,9 +113,10 @@ const deleteUser = async (req, res) => {
     const deletedUser = await prisma.users.delete({
       where: { userId },
     });
-    logger.debug(deletedUser);
     if (!deletedUser) {
-      res.status(404).send({ message: "Record does not exist" });
+      logger.error(`${deletedUser}`);
+      res.status(404).send({ message: "Error deleting the user" });
+      return;
     }
     res.status(200).send(deletedUser);
   } catch (err) {
