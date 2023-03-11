@@ -14,10 +14,8 @@ const {
 // create => signup
 router.put("/signup", createUser);
 
-// read => login
+// read => redirect here from auth login and when navigating to the account dashboard
 router.get("/", getUser);
-
-// logout
 
 // update => edit
 router.patch("/update", updateUser);

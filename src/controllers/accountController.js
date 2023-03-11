@@ -70,7 +70,14 @@ const getUser = async (req, res) => {
   }
 };
 
-// Update a User
+/**
+ * DELETE THE CURRENT LOGGED-IN USER
+ * @http DELETE
+ * @endpoint {baseUrl}/account/delete
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 const updateUser = async (req, res) => {
   logger.info("PATCH /account/update");
   try {
