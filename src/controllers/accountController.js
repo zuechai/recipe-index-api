@@ -48,8 +48,7 @@ const getUser = async (req, res, next) => {
   try {
     const { userId } = req.body;
     if (!userId) {
-      res.status(401).send({ message: "Missing data in request body" });
-      return;
+      throw { status: 401, message: "Missing data in request body" };
     }
     const foundUser = await prisma.users.findUnique({
       where: { userId },
@@ -60,15 +59,11 @@ const getUser = async (req, res, next) => {
       },
     });
     if (!foundUser) {
-      // res.status(404).send("Does not exist");
-      // return;
       throw { status: 404, message: "Does not exist" };
     }
     res.json(foundUser);
-  } catch (err) {
-    // logger.error(new Error(`Caught in getUser(), ${err}`));
-    // res.status(500).send({ message: "Caught in getUser()", error: err });
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
