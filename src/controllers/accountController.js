@@ -43,7 +43,7 @@ const createUser = async (req, res) => {
  * @param {*} req.query.byId
  * @param {*} res
  */
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   logger.info("GET /account");
   try {
     const { userId } = req.body;
@@ -60,13 +60,15 @@ const getUser = async (req, res) => {
       },
     });
     if (!foundUser) {
-      res.status(404).send("Does not exist");
-      return;
+      // res.status(404).send("Does not exist");
+      // return;
+      throw { status: 404, message: "Does not exist" };
     }
     res.json(foundUser);
   } catch (err) {
-    logger.error(new Error(`Caught in getUser(), ${err}`));
-    res.status(500).send({ message: "Caught in getUser()", error: err });
+    // logger.error(new Error(`Caught in getUser(), ${err}`));
+    // res.status(500).send({ message: "Caught in getUser()", error: err });
+    next(err);
   }
 };
 

@@ -18,10 +18,14 @@ app.get("/", (_req, res) => {
 const recipesRoute = require("./routes/recipesRoute");
 const accountRoute = require("./routes/accountRoute");
 const usersRoute = require("./routes/usersRoute");
+const errorHandler = require("./middleware/errorHandler");
 
 app.use("/recipes", recipesRoute);
 app.use("/account", accountRoute);
 app.use("/users", usersRoute);
+
+// error handler
+app.use(errorHandler);
 
 // run server
 const PORT = process.env.PORT || 5050;
