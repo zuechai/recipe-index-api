@@ -21,11 +21,13 @@ const {
  * @param req.query.contains {baseUrl}/recipes?contains=<string>'
  * @param res
  */
-const getRecipesBySearch = async (req, res) => {
+const getRecipesBySearch = async (req, res, next) => {
   logger.info("GET getRecipesBySearch");
   try {
-    const query = req.query.contains;
-    logger.trace(query);
+    let query = null;
+    if (req.query.contains) {
+      query = req.query.contains;
+    }
 
     const results = await prisma.recipeIngredients.findMany({
       orderBy: {
@@ -58,12 +60,8 @@ const getRecipesBySearch = async (req, res) => {
     const recipes = results.map(({ recipes }) => recipes);
 
     res.json(recipes);
-  } catch (err) {
-    logger.error("Caught in getRecipes");
-    res.status(500).send({
-      message: "Error retrieving user recipes",
-      error: err,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -74,10 +72,18 @@ const getRecipesBySearch = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const getSelectedRecipe = async (req, res) => {
+const getSelectedRecipe = async (req, res, next) => {
   logger.info("GET getSingleRecipe");
   try {
-    const r = await prisma.recipes.findUnique({
+    // check for recipe ID in request parameters
+    if (!req.params.id) {
+      throw {
+        status: 400,
+        message: "Recipe ID not provided in request parameters",
+      };
+    }
+    // Search for the recipe by id in the database
+    const foundRecipe = await prisma.recipes.findUnique({
       where: { recipeId: req.params.id },
       include: {
         recipeIngredients: {
@@ -103,11 +109,14 @@ const getSelectedRecipe = async (req, res) => {
         },
       },
     });
-
-    const { recipeId, title, image, createdAt, updatedAt } = r;
-    const { methods: methods, recipeIngredients: ings } = r;
-
-    const ingredients = ings.map(
+    // Check that a recipe by the provided ID exists
+    if (!foundRecipe) {
+      throw { status: 500, message: "Error retrieving recipe" };
+    }
+    // move all of this to a utility file for formatter the found recipe
+    const { recipeId, title, image, createdAt, updatedAt } = foundRecipe;
+    const { methods: methods, recipeIngredients: ingredients } = foundRecipe;
+    const mappedIngredients = ingredients.map(
       ({ measurement, ingredientId, ingredients: i }) => {
         const { ingredient } = i;
         return {
@@ -117,49 +126,54 @@ const getSelectedRecipe = async (req, res) => {
         };
       }
     );
-
     const recipe = {
       recipeId,
       title,
       image,
       createdAt,
       updatedAt,
-      ingredients,
+      mappedIngredients,
       methods,
     };
-
+    // return the recipe
     res.json(recipe);
-  } catch (err) {
-    logger.error("Caught in getSelectedRecipe");
-    res
-      .status(500)
-      .send({ message: "Error retrieving single recipe", error: err });
+  } catch (error) {
+    next(error);
   }
 };
 
 /**
  * CREATES A NEW RECIPE
  * @http PUT
- * @endpoint {base}/recipes/add-recipe
+ * @endpoint {base}/recipes/new-recipe
  * @param {*} req
  * @param {*} res
  */
-const createRecipe = async (req, res) => {
+const createRecipe = async (req, res, next) => {
   logger.info("PUT createRecipe");
   try {
+    // Check that recipe is provided in the request body
     if (Object.keys(req.body).length === 0) {
-      res.status(400).send({
+      throw {
+        status: 400,
         message: "No data present in the body of request to create a recipe",
-      });
+      };
     }
-    const { userId, title, image, ingredients, methods } = req.body;
-
+    const { body } = req;
+    // Check for required fields in the request body
+    const keys = Object.keys(body);
+    if (!keys.includes("userId", "title", "image", "ingredients", "methods")) {
+      throw { status: 400, message: "Missing required fields in request body" };
+    }
+    const { userId, title, image, ingredients, methods } = body;
+    // check the provided user ID
     const foundUser = await findUserWithId(userId);
     if (!foundUser) {
-      res.status(404).send({ message: "User not found" });
+      throw { status: 404, message: "User not found" };
     }
-
+    // insert recipe into database
     const recipeId = uuidv4();
+    // ! NEED TO VALIDATE THE INGREDIENTS ARE VALID BEFORE CALLING THE FOLLOWING FUNCTION
     const recipeIngredients = await findOrCreateIngredients(ingredients);
     // check recipeIngredients and ingredients are the same length
     if (ingredients.length !== recipeIngredients.length) {
@@ -168,9 +182,8 @@ const createRecipe = async (req, res) => {
           "Arrays of ingredients requested and found/created do not match",
       });
     }
-
     const imagePath = setImagePath(image);
-
+    // insert the recipe minus the recipeIngredients
     const createdRecipe = await prisma.recipes.create({
       data: {
         recipeId,
@@ -184,9 +197,18 @@ const createRecipe = async (req, res) => {
         },
       },
     });
-
-    // needs to happen after the recipe object is added or as part of its creation using a nested createdMany
-    await createRecipeIngredients(createdRecipe.recipeId, recipeIngredients);
+    if (!createRecipe) {
+      throw { status: 500, message: "Error inserting recipe into database" };
+    }
+    // add the recipeIngredients to the newly created recipe
+    const createdRecipeIngredients = await createRecipeIngredients(
+      createdRecipe.recipeId,
+      recipeIngredients
+    );
+    // This code is likely unecessary as it's handled in the try catch within the utility function
+    // if (!createdRecipeIngredients) {
+    //   throw { status: 500, message: "Error inserting ingredients for recipe" };
+    // }
     const finalCreatedRecipe = await prisma.recipes.findUnique({
       where: { recipeId: createdRecipe.recipeId },
       include: {
@@ -194,12 +216,12 @@ const createRecipe = async (req, res) => {
         methods: true,
       },
     });
+    if (!finalCreatedRecipe) {
+      throw { status: 500, message: "Error finding the created recipe" };
+    }
     res.json(finalCreatedRecipe);
-  } catch (err) {
-    logger.error("Caught in createRecipe()");
-    res
-      .status(500)
-      .send({ message: "Caught at the end of createRecipe()", error: err });
+  } catch (error) {
+    next(error);
   }
 };
 
