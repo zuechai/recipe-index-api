@@ -20,15 +20,13 @@ const serverLogFormat = printf(({ level, message, timestamp, stack }) => {
   return `${logFormat} ${stackMsg}`;
 });
 
+const format =
+  process.env.NODE_ENV === "production" ? serverLogFormat : prettyPrint();
+
 const logger = winston.createLogger({
   levels: logLevels,
   level: process.env.NODE_ENV === "production" ? "info" : "trace",
-  format: combine(
-    timestamp(),
-    errors({ stack: true }),
-    // serverLogFormat
-    prettyPrint()
-  ),
+  format: combine(timestamp(), errors({ stack: true }), format),
   transports: [new winston.transports.Console()],
 });
 
