@@ -13,6 +13,7 @@ const {
 const {
   createRecipeIngredients,
 } = require("../utils/dbUtils/recipeIngredientsUtils");
+const { findUniqueRecipe } = require("../utils/dbUtils/recipesUtils");
 
 /**
  * GET ALL RECIPES with an optional query
@@ -165,6 +166,9 @@ const createRecipe = async (req, res, next) => {
     if (!keys.includes("userId", "title", "image", "ingredients", "methods")) {
       throw { status: 400, message: "Missing required fields in request body" };
     }
+
+    // // CONSIDER IF MOVING MORE OF THIS TO A SERVICES FOLDER/FILE MAKES SENSE FOR MAINTENANCE AND SCALABILITY?
+
     const { userId, title, image, ingredients, methods } = body;
     // check the provided user ID
     const foundUser = await findUserWithId(userId);
@@ -173,7 +177,15 @@ const createRecipe = async (req, res, next) => {
     }
     // insert recipe into database
     const recipeId = uuidv4();
-    // ! NEED TO VALIDATE THE INGREDIENTS ARE VALID BEFORE CALLING THE FOLLOWING FUNCTION
+    if (ingredients.length === 0) {
+      throw { status: 400, message: "No ingredients provided in request body" };
+    }
+    const areIngredientsValid = ingredients.map((item) =>
+      item.ingredient ? true : false
+    );
+    if (areIngredientsValid.includes(false)) {
+      throw { status: 400, message: "Invalid ingredients provided" };
+    }
     const recipeIngredients = await findOrCreateIngredients(ingredients);
     // check recipeIngredients and ingredients are the same length
     if (ingredients.length !== recipeIngredients.length) {
@@ -205,17 +217,8 @@ const createRecipe = async (req, res, next) => {
       createdRecipe.recipeId,
       recipeIngredients
     );
-    // This code is likely unecessary as it's handled in the try catch within the utility function
-    // if (!createdRecipeIngredients) {
-    //   throw { status: 500, message: "Error inserting ingredients for recipe" };
-    // }
-    const finalCreatedRecipe = await prisma.recipes.findUnique({
-      where: { recipeId: createdRecipe.recipeId },
-      include: {
-        recipeIngredients: true,
-        methods: true,
-      },
-    });
+    // check for newly created recipe in database
+    const finalCreatedRecipe = await findUniqueRecipe(createdRecipe.recipeId);
     if (!finalCreatedRecipe) {
       throw { status: 500, message: "Error finding the created recipe" };
     }
