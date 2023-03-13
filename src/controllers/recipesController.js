@@ -82,32 +82,11 @@ const getSelectedRecipe = async (req, res, next) => {
       };
     }
     // Search for the recipe by id in the database
-    const foundRecipe = await prisma.recipes.findUnique({
-      where: { recipeId: req.params.id },
-      include: {
-        recipeIngredients: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            measurement: true,
-            ingredientId: true,
-            ingredients: {
-              select: {
-                ingredient: true,
-              },
-            },
-          },
-        },
-        methods: {
-          select: {
-            id: true,
-            stepNum: true,
-            method: true,
-          },
-        },
-      },
-    });
+    const Recipe = require("../models/RecipeModel");
+    const foundRecipe = await findUniqueRecipe(req.params.id);
+    const recipeClass = new Recipe(foundRecipe);
+    logger.trace(recipeClass.toString());
+    // throw {};
     // Check that a recipe by the provided ID exists
     if (!foundRecipe) {
       throw { status: 500, message: "Error retrieving recipe" };
