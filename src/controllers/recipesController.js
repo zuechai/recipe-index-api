@@ -1,10 +1,8 @@
+// imports
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
-const express = require("express");
 const logger = require("../utils/logger/logger");
-const app = express();
-app.use("/static", express.static("public"));
-
+// utilities
 const { findUserWithId } = require("../utils/dbUtils/usersUtils");
 const { setImagePath } = require("../utils/dbUtils/imagesUtils");
 const {
