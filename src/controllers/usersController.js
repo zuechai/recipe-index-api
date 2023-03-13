@@ -1,37 +1,23 @@
 const prisma = require("../prisma");
-const { v4: uuidv4 } = require("uuid");
 const logger = require("../utils/logger/logger");
 
-// create new user
-const createUser = async (req, res) => {
-  logger.info("PUT createUser");
-  try {
-    const newUser = req.body;
-
-    const foundUser = await prisma.users.findUnique({
-      where: { username: newUser.username },
-    });
-
-    if (!foundUser) {
-      const created = await prisma.users.create({
-        data: {
-          ...newUser,
-        },
-      });
-      res.json(created);
-    }
-    res.status(400).send({ message: "User already exist." });
-  } catch (e) {
-    logger.error(e);
-    res.status(500).send(e);
-  }
-};
-
+/**
+ * FIND ONE OR MORE USERS
+ * @http GET
+ * @endpoint  {baseUrl}/users?byIds
+ * @param {*} req.query.byIds
+ * @param {*} res
+ */
 const findUsers = async (req, res) => {
-  logger.info("GET findUsers");
-  const query = req.query.u;
-  logger.trace(query);
+  logger.info("GET users?byTag");
   try {
+    if (!Object.keys(req.query).includes("byTag")) {
+      res.status(400).send({ message: "No query provided" });
+    }
+    const query = req.query.byTag;
+    if (!query || query.length < 4) {
+      res.status(400).send({ message: "Invalid query value provided" });
+    }
     const foundUser = await prisma.users.findMany({
       select: {
         userId: true,
@@ -51,15 +37,13 @@ const findUsers = async (req, res) => {
     });
 
     if (foundUser.length === 0) {
-      res.status(400).send("User does not exist");
+      res.status(404).send("User does not exist");
     } else {
       res.json(foundUser);
     }
-  } catch (e) {
-    res.status(500).send(e);
+  } catch (err) {
+    res.status(500).send({ message: "Caught in findUsers()", error: err });
   }
 };
 
-// const findCollaborators = async () => {};
-
-module.exports = { createUser, findUsers };
+module.exports = { findUsers };

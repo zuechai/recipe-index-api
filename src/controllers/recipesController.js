@@ -18,13 +18,13 @@ const {
  * GET ALL RECIPES with an optional query
  * @http GET
  * @endpoint {baseUrl}/recipes || {baseUrl}/recipes?q={query}
- * @param {*} req
- * @param {*} res
+ * @param req.query.contains {baseUrl}/recipes?contains=<string>'
+ * @param res
  */
 const getRecipesBySearch = async (req, res) => {
   logger.info("GET getRecipesBySearch");
   try {
-    const query = req.query.q;
+    const query = req.query.contains;
     logger.trace(query);
 
     const results = await prisma.recipeIngredients.findMany({
@@ -59,7 +59,7 @@ const getRecipesBySearch = async (req, res) => {
 
     res.json(recipes);
   } catch (err) {
-    logger.error(err);
+    logger.error("Caught in getRecipes");
     res.status(500).send({
       message: "Error retrieving user recipes",
       error: err,
@@ -130,7 +130,7 @@ const getSelectedRecipe = async (req, res) => {
 
     res.json(recipe);
   } catch (err) {
-    logger.error(err);
+    logger.error("Caught in getSelectedRecipe");
     res
       .status(500)
       .send({ message: "Error retrieving single recipe", error: err });
@@ -196,7 +196,7 @@ const createRecipe = async (req, res) => {
     });
     res.json(finalCreatedRecipe);
   } catch (err) {
-    logger.error(new Error(err));
+    logger.error("Caught in createRecipe()");
     res
       .status(500)
       .send({ message: "Caught at the end of createRecipe()", error: err });
