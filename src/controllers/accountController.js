@@ -2,6 +2,8 @@ const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
 const logger = require("../utils/logger/logger");
 
+const { validateUsername, validateEmail } = require("../utils/validate");
+
 /**
  * CREATE A NEW USER
  * @http PUT
@@ -9,30 +11,46 @@ const logger = require("../utils/logger/logger");
  * @param {*} req eventually will read in a token
  * @param {*} res
  */
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   logger.info("PUT account/signup");
   try {
+    // check for body
+    if (Object.keys(req.body).length === 0) {
+      throw { status: 400, message: "No request body provided" };
+    }
+    // check body contains required fields
+    const keys = Object.keys(req.body);
+    if (!keys.includes("firstName", "lastName", "username", "email")) {
+      throw { status: 400, message: "Missing data in the request body" };
+    }
+    // validate username and email
     const newUser = req.body;
-
+    if (!validateUsername(newUser.username)) {
+      throw { status: 400, message: "Invalid username" };
+    }
+    if (!validateEmail(newUser.email)) {
+      throw { status: 400, message: "Invalid email" };
+    }
+    // check if username is available
     const foundUser = await prisma.users.findUnique({
       where: { username: newUser.username },
     });
     if (foundUser) {
-      res.status(400).send({ message: "User already exist." });
-      return;
+      throw { status: 400, message: "User already exist" };
     }
+    // insert user into database
     newUser.userId = uuidv4();
     const created = await prisma.users.create({
       data: newUser,
     });
+    // check for a successful submission
     if (!created) {
-      res.status(500).send({ message: "Could not create user" });
-      return;
+      throw { status: 500, message: "Error creating user" };
     }
+    // return the newly created user
     res.json(created);
-  } catch (err) {
-    logger.error("Caught in createUser");
-    res.status(500).send({ message: "Error creating user", error: err });
+  } catch (error) {
+    next(error);
   }
 };
 
