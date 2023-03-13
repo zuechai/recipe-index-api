@@ -8,15 +8,15 @@ const logger = require("../utils/logger/logger");
  * @param {*} req.query.byIds
  * @param {*} res
  */
-const findUsers = async (req, res) => {
-  logger.info("GET users?byTag");
+const findUsers = async (req, res, next) => {
+  logger.info("GET /users?byTag");
   try {
     if (!Object.keys(req.query).includes("byTag")) {
-      res.status(400).send({ message: "No query provided" });
+      throw { status: 400, message: "No query provided" };
     }
     const query = req.query.byTag;
     if (!query || query.length < 4) {
-      res.status(400).send({ message: "Invalid query value provided" });
+      throw { status: 400, message: "Invalid query value provided" };
     }
     const foundUser = await prisma.users.findMany({
       select: {
@@ -37,12 +37,11 @@ const findUsers = async (req, res) => {
     });
 
     if (foundUser.length === 0) {
-      res.status(404).send("User does not exist");
-    } else {
-      res.json(foundUser);
+      throw { status: 400, message: "User does not exist" };
     }
-  } catch (err) {
-    res.status(500).send({ message: "Caught in findUsers()", error: err });
+    res.json(foundUser);
+  } catch (error) {
+    next(error);
   }
 };
 
