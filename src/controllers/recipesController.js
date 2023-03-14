@@ -185,6 +185,13 @@ const createRecipe = async (req, res, next) => {
       createdRecipe.recipeId,
       recipeIngredients
     );
+    if (!createdRecipeIngredients) {
+      throw {
+        status: 500,
+        message: "Error inserting recipe's ingredients into database",
+      };
+    }
+
     // check for newly created recipe in database
     const finalCreatedRecipe = await findUniqueRecipe(createdRecipe.recipeId);
     if (!finalCreatedRecipe) {
