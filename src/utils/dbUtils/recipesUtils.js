@@ -21,7 +21,6 @@ async function findUniqueRecipe(id) {
           select: {
             stepNum: true,
             method: true,
-            updatedAt: true,
           },
         },
       },

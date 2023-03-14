@@ -20,7 +20,7 @@ class Recipe {
     this.updatedAt = recipe.updatedAt; // Date
   }
 
-  toString() {
+  formatted() {
     return {
       id: this.id,
       title: this.title,
