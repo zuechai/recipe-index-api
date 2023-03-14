@@ -2,6 +2,8 @@
 const prisma = require("../prisma");
 const { v4: uuidv4 } = require("uuid");
 const logger = require("../utils/logger/logger");
+// models
+const Recipe = require("../models/RecipeModel");
 // utilities
 const { findUserWithId } = require("../utils/dbUtils/usersUtils");
 const { setImagePath } = require("../utils/dbUtils/imagesUtils");
@@ -81,61 +83,18 @@ const getSelectedRecipe = async (req, res, next) => {
         message: "Recipe ID not provided in request parameters",
       };
     }
+
     // Search for the recipe by id in the database
-    const foundRecipe = await prisma.recipes.findUnique({
-      where: { recipeId: req.params.id },
-      include: {
-        recipeIngredients: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            measurement: true,
-            ingredientId: true,
-            ingredients: {
-              select: {
-                ingredient: true,
-              },
-            },
-          },
-        },
-        methods: {
-          select: {
-            id: true,
-            stepNum: true,
-            method: true,
-          },
-        },
-      },
-    });
+    const foundRecipe = await findUniqueRecipe(req.params.id);
+    const recipeClass = new Recipe(foundRecipe);
+
     // Check that a recipe by the provided ID exists
     if (!foundRecipe) {
       throw { status: 500, message: "Error retrieving recipe" };
     }
-    // move all of this to a utility file for formatter the found recipe
-    const { recipeId, title, image, createdAt, updatedAt } = foundRecipe;
-    const { methods: methods, recipeIngredients: ingredients } = foundRecipe;
-    const mappedIngredients = ingredients.map(
-      ({ measurement, ingredientId, ingredients: i }) => {
-        const { ingredient } = i;
-        return {
-          ingredientId,
-          measurement,
-          ingredient,
-        };
-      }
-    );
-    const recipe = {
-      recipeId,
-      title,
-      image,
-      createdAt,
-      updatedAt,
-      mappedIngredients,
-      methods,
-    };
+
     // return the recipe
-    res.json(recipe);
+    res.json(recipeClass.formatted());
   } catch (error) {
     next(error);
   }
@@ -158,9 +117,11 @@ const createRecipe = async (req, res, next) => {
         message: "No data present in the body of request to create a recipe",
       };
     }
-    const { body } = req;
+
     // Check for required fields in the request body
+    const { body } = req;
     const keys = Object.keys(body);
+
     if (!keys.includes("userId", "title", "image", "ingredients", "methods")) {
       throw { status: 400, message: "Missing required fields in request body" };
     }
@@ -168,23 +129,28 @@ const createRecipe = async (req, res, next) => {
     // // CONSIDER IF MOVING MORE OF THIS TO A SERVICES FOLDER/FILE MAKES SENSE FOR MAINTENANCE AND SCALABILITY?
 
     const { userId, title, image, ingredients, methods } = body;
+
     // check the provided user ID
     const foundUser = await findUserWithId(userId);
     if (!foundUser) {
       throw { status: 404, message: "User not found" };
     }
+
     // insert recipe into database
-    const recipeId = uuidv4();
     if (ingredients.length === 0) {
       throw { status: 400, message: "No ingredients provided in request body" };
     }
+
     const areIngredientsValid = ingredients.map((item) =>
       item.ingredient ? true : false
     );
     if (areIngredientsValid.includes(false)) {
       throw { status: 400, message: "Invalid ingredients provided" };
     }
+
+    const recipeId = uuidv4();
     const recipeIngredients = await findOrCreateIngredients(ingredients);
+
     // check recipeIngredients and ingredients are the same length
     if (ingredients.length !== recipeIngredients.length) {
       res.status(400).send({
@@ -192,7 +158,9 @@ const createRecipe = async (req, res, next) => {
           "Arrays of ingredients requested and found/created do not match",
       });
     }
+
     const imagePath = setImagePath(image);
+
     // insert the recipe minus the recipeIngredients
     const createdRecipe = await prisma.recipes.create({
       data: {
@@ -207,20 +175,32 @@ const createRecipe = async (req, res, next) => {
         },
       },
     });
+
     if (!createRecipe) {
       throw { status: 500, message: "Error inserting recipe into database" };
     }
+
     // add the recipeIngredients to the newly created recipe
     const createdRecipeIngredients = await createRecipeIngredients(
       createdRecipe.recipeId,
       recipeIngredients
     );
+    if (!createdRecipeIngredients) {
+      throw {
+        status: 500,
+        message: "Error inserting recipe's ingredients into database",
+      };
+    }
+
     // check for newly created recipe in database
     const finalCreatedRecipe = await findUniqueRecipe(createdRecipe.recipeId);
     if (!finalCreatedRecipe) {
       throw { status: 500, message: "Error finding the created recipe" };
     }
-    res.json(finalCreatedRecipe);
+
+    const recipeClass = new Recipe(finalCreatedRecipe);
+
+    res.json(recipeClass.formatted());
   } catch (error) {
     next(error);
   }
