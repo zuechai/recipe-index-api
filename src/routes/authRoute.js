@@ -11,18 +11,12 @@ const saltRounds = 10;
 router.get("/signup", async (req, res, next) => {
   const password = "password";
   const wrongPw = "wrong";
-  const hashedPassword = await bcrypt.hash(
-    password,
-    saltRounds,
-    async (error, hash) => {
-      if (error) {
-        throw error;
-      }
-      logger.trace(hash);
-      return hash;
-    }
-  );
-  res.json(hashedPassword);
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  let isCorrect = await bcrypt.compare(password, hashedPassword);
+  logger.trace(isCorrect);
+  isCorrect = await bcrypt.compare(wrongPw, hashedPassword);
+  logger.trace(isCorrect);
+  res.json("");
 });
 
 module.exports = router;
