@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
 const { findUserWithId } = require("../src/utils/dbUtils/usersUtils");
 const {
@@ -15,7 +16,6 @@ const logger = require("../src/utils/logger/logger");
 
 // read recipes from json file
 const fs = require("fs");
-const { ingredients } = require("../src/prisma");
 const filePath = "./prisma/recipeData.json";
 const file = fs.readFileSync(filePath);
 const recipes = JSON.parse(file);
@@ -51,8 +51,6 @@ async function main(users, recipes) {
   for (let i = 0; i < users.length; i++) {
     await createUser(users[i]);
   }
-
-  // Insert recipes into the database
   for (let i = 0; i < recipes.length; i++) {
     await createRecipe(recipes[i]);
   }
@@ -64,10 +62,10 @@ async function main(users, recipes) {
  */
 async function createUser(newUser) {
   try {
-    const created = await prisma.users.create({
+    newUser.hashedPw = await bcrypt.hash("password", 10);
+    await prisma.users.create({
       data: newUser,
     });
-    logger.info(created);
   } catch (err) {
     logger.error("Error in createUser()");
   }
@@ -84,7 +82,7 @@ async function createRecipe(recipe) {
     const foundUser = await findUserWithId(anthony.userId);
     if (!foundUser) {
       logger.error("User not found");
-      throw new Error("User not found");
+      throw new Error("User not found" + foundUser);
     }
 
     const recipeId = uuidv4();

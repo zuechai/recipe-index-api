@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -51,6 +52,7 @@ model Recipes {
 model Users {
   userId        String          @id @unique(map: "userId") @db.Char(36)
   username      String          @unique(map: "username") @db.VarChar(255)
+  hashedPw      String          @db.VarChar(255)
   firstName     String          @db.VarChar(255)
   lastName      String          @db.VarChar(255)
   email         String          @unique(map: "email") @db.VarChar(255)

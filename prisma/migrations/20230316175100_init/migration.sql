@@ -53,6 +53,7 @@ CREATE TABLE `Recipes` (
 CREATE TABLE `Users` (
     `userId` CHAR(36) NOT NULL,
     `username` VARCHAR(255) NOT NULL,
+    `hashedPw` VARCHAR(255) NOT NULL,
     `firstName` VARCHAR(255) NOT NULL,
     `lastName` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
