@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
 // const passport = require("passport");
-// const session = require("express-session");
+const session = require("express-session");
 // const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const cookieParser = require("cookie-parser");
 // const prisma = require("./prisma");
@@ -15,9 +15,16 @@ require("dotenv").config();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/static", express.static("public"));
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.get("/", (_req, res) => {
   res.json("Welcome to Recipe Index API");
