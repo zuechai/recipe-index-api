@@ -4,7 +4,7 @@ const prisma = require("../prisma");
 const logger = require("../utils/logger/logger");
 const router = express.Router();
 
-const saltRounds = 10;
+const saltRounds = process.env.SALT_ROUNDS;
 
 router.get("/signup", async (req, res, next) => {
   const password = "password";
@@ -20,8 +20,11 @@ router.get("/signup", async (req, res, next) => {
 router.put("/login", async (req, res, next) => {
   logger.info("PUT /auth/login");
   try {
+    if (Object.keys(req.body).length === 0) {
+      throw { status: 400, message: "No request body" };
+    }
     const { username, password } = req.body;
-    if (username && password) {
+    if (username !== null && password !== null) {
       const foundUser = await prisma.users.findUnique({
         where: { username },
       });
